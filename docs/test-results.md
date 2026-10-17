@@ -48,3 +48,11 @@ SHA-256：`37F0C85D5A4A1A20FC47F0B972B19456F3319BB581FB0A53A54640D0298B36E8`
 首次设备执行发现 `OfflineJourneyTest` 旋转后断言错误（期望回到主页，但导航栈恢复后正确停留在关卡页）；已改为断言关卡页与世界快照一致。截图检查发现横屏地图被标签栏遮挡，已改为单行横向滚动标签栏并重排节点。
 
 未执行：API 29 / API 35+ 真机、平板、分屏、200% 字号、TalkBack、性能基准。`verifyFullGame` 按设计失败（30/60）。
+
+## 2026-10-18 · GitHub Actions 环境修复
+
+失败 run：39002042750（dc40801）。两个 job 均在 setup-android 阶段停止，日志为 `Warning: Failed to find package 'tools'`，随后 sdkmanager exit code 1；Gradle 未执行。没有 APK/报告可上传是该失败的后果，Node.js 和 ubuntu-latest 的提醒不是这次失败的直接原因。
+
+修复：升级到已验证使用 Node 24 的 Actions；setup-android v4 显式安装 platform-tools / API 35 / build-tools 35.0.0，避免旧 tools 包；固定 ubuntu-24.04；APK 独立上传为 OCI-Cloud-Commander-debug-apk，报告上传允许在尚未产生文件时跳过。
+
+本地 actionlint 与 git diff --check 通过。远端是否完整通过，以修复提交对应的 Actions run 为准，不能以本地检查代替远端构建。

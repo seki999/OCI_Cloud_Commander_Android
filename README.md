@@ -93,3 +93,5 @@ adb shell am start -n com.example.ocicloudcommander/.MainActivity
 不得输入真实密码、真实私钥或真实 OCI 凭证。这里只接受教学短 ID 和模拟别名。
 
 本次 Phase 2 复核修正了网络/端口/重定向、配置校验、备份数据恢复点、生命周期误通关和 Locale 确定性问题；详情见 [phase2-review.md](docs/phase2-review.md)。L25 设备测试现使用真实 Console 表单及 Terminal 输入，不再直接派发修复动作。
+
+从 GitHub 下载 APK：进入 Actions → 最新成功的 **Android Phase 0-2** → Artifacts → **OCI-Cloud-Commander-debug-apk**，下载并解压其中的 `app-debug.apk`。验证报告和设备测试报告分别上传，不与 APK 混在同一个目录压缩包中。

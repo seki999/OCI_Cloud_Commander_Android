@@ -3,53 +3,82 @@ on:
   push:
   pull_request:
   workflow_dispatch:
+
+permissions:
+  contents: read
+
 jobs:
   verify:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-java@v6.1.0
         with:
           distribution: temurin
           java-version: '17'
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7.0.0
         with:
           python-version: '3.12'
-      - uses: android-actions/setup-android@v3
-      - run: sdkmanager 'platforms;android-35' 'build-tools;35.0.0'
-      - uses: gradle/actions/setup-gradle@v4
-      - run: chmod +x gradlew
-      - run: pip install -r scripts/requirements.txt
-      - run: ./gradlew lintDebug testDebugUnitTest assembleDebug validateContent solveLevels --console=plain
-      - uses: actions/upload-artifact@v4
-        if: always()
+      - name: Install Android build SDK
+        uses: android-actions/setup-android@v4.0.4
         with:
-          name: phase2-apk-and-reports
+          packages: 'platform-tools platforms;android-35 build-tools;35.0.0'
+          log-accepted-android-sdk-licenses: 'false'
+      - uses: gradle/actions/setup-gradle@v6.4.0
+      - run: python -m pip install -r scripts/requirements.txt
+      - name: Lint, test, validate levels and build APK
+        run: ./gradlew lintDebug testDebugUnitTest assembleDebug validateContent solveLevels --console=plain --stacktrace
+      - name: Upload installable Debug APK
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: OCI-Cloud-Commander-debug-apk
+          path: app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+      - name: Upload verification reports
+        if: always()
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: verification-reports
+          if-no-files-found: ignore
           path: |
-            app/build/outputs/apk/debug/*.apk
             app/build/reports/
             core/testing/build/reports/
+
   emulator:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-java@v6.1.0
         with:
           distribution: temurin
           java-version: '17'
-      - uses: android-actions/setup-android@v3
-      - run: sudo chmod 666 /dev/kvm
-      - run: chmod +x gradlew
-      - uses: reactivecircus/android-emulator-runner@v2
+      - name: Install Android build SDK
+        uses: android-actions/setup-android@v4.0.4
+        with:
+          packages: 'platform-tools platforms;android-35 build-tools;35.0.0'
+          log-accepted-android-sdk-licenses: 'false'
+      - uses: gradle/actions/setup-gradle@v6.4.0
+      - name: Enable KVM for emulator
+        run: sudo chmod 666 /dev/kvm
+      - name: Run Compose device tests
+        uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 35
           arch: x86_64
           profile: pixel_2
+          cores: 2
+          ram-size: 2048M
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
-          script: ./gradlew connectedDebugAndroidTest --console=plain
-      - uses: actions/upload-artifact@v4
+          script: ./gradlew connectedDebugAndroidTest --console=plain --stacktrace
+      - name: Upload device test reports
         if: always()
+        uses: actions/upload-artifact@v7.0.2
         with:
           name: instrumentation-reports
-          path: app/build/reports/androidTests/
+          if-no-files-found: ignore
+          path: |
+            app/build/reports/androidTests/
+            app/build/outputs/androidTest-results/
