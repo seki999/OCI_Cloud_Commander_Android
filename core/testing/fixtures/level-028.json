@@ -1,0 +1,77 @@
+{
+  "levelId": "oci-028",
+  "golden": [
+    {
+      "type": "create",
+      "resource": {
+        "id": "www-cert",
+        "kind": "CERTIFICATE",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "commonName": "www.starport.example",
+          "validTicks": "90"
+        },
+        "references": {}
+      }
+    },
+    {
+      "type": "update",
+      "id": "lb",
+      "patch": {
+        "listenPorts": "80,443",
+        "redirectHttp": "true"
+      },
+      "references": {
+        "certificate": "www-cert"
+      }
+    },
+    {
+      "type": "update",
+      "id": "lb-nsg",
+      "patch": {
+        "rules": "ingress|0.0.0.0/0|tcp|80|stateful;egress|10.10.1.0/24|tcp|8080|stateful;ingress|0.0.0.0/0|tcp|443|stateful"
+      },
+      "references": {}
+    },
+    {
+      "type": "inspect",
+      "id": "dev"
+    }
+  ],
+  "negative": [
+    {
+      "type": "create",
+      "resource": {
+        "id": "www-cert",
+        "kind": "CERTIFICATE",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "commonName": "shop.starport.example",
+          "validTicks": "90"
+        },
+        "references": {}
+      }
+    },
+    {
+      "type": "update",
+      "id": "lb",
+      "patch": {
+        "listenPorts": "80,443",
+        "redirectHttp": "true"
+      },
+      "references": {
+        "certificate": "www-cert"
+      }
+    },
+    {
+      "type": "update",
+      "id": "lb-nsg",
+      "patch": {
+        "rules": "ingress|0.0.0.0/0|tcp|80|stateful;egress|10.10.1.0/24|tcp|8080|stateful;ingress|0.0.0.0/0|tcp|443|stateful"
+      },
+      "references": {}
+    }
+  ]
+}

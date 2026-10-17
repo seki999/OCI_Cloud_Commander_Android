@@ -1,0 +1,99 @@
+{
+  "levelId": "oci-012",
+  "golden": [
+    {
+      "type": "update",
+      "id": "collision",
+      "patch": {
+        "cidr": "10.10.4.0/24"
+      },
+      "references": {}
+    },
+    {
+      "type": "update",
+      "id": "public-rt",
+      "patch": {
+        "routes": "0.0.0.0/0>igw"
+      },
+      "references": {}
+    },
+    {
+      "type": "update",
+      "id": "web-nsg",
+      "patch": {
+        "rules": "ingress|0.0.0.0/0|tcp|443|stateful;egress|10.10.2.0/24|tcp|8080|stateful"
+      },
+      "references": {}
+    },
+    {
+      "type": "update",
+      "id": "app-nsg",
+      "patch": {
+        "rules": "ingress|10.10.1.0/24|tcp|8080|stateful;egress|10.10.3.0/24|tcp|1521|stateful"
+      },
+      "references": {}
+    },
+    {
+      "type": "update",
+      "id": "db-nsg",
+      "patch": {
+        "rules": "ingress|10.10.2.0/24|tcp|1521|stateful"
+      },
+      "references": {}
+    },
+    {
+      "type": "update",
+      "id": "db",
+      "patch": {
+        "publicIp": ""
+      },
+      "references": {}
+    },
+    {
+      "type": "update",
+      "id": "db-sub",
+      "patch": {
+        "public": "false"
+      },
+      "references": {}
+    },
+    {
+      "type": "inspect",
+      "id": "dev"
+    }
+  ],
+  "negative": [
+    {
+      "type": "update",
+      "id": "collision",
+      "patch": {
+        "cidr": "10.10.4.0/24"
+      },
+      "references": {}
+    },
+    {
+      "type": "update",
+      "id": "public-rt",
+      "patch": {
+        "routes": "0.0.0.0/0>igw"
+      },
+      "references": {}
+    },
+    {
+      "type": "update",
+      "id": "web-nsg",
+      "patch": {
+        "rules": "ingress|0.0.0.0/0|tcp|443|stateful;egress|10.10.2.0/24|tcp|8080|stateful"
+      },
+      "references": {}
+    },
+    {
+      "type": "update",
+      "id": "app-nsg",
+      "patch": {
+        "rules": "ingress|10.10.1.0/24|tcp|8080|stateful;egress|10.10.3.0/24|tcp|1521|stateful"
+      },
+      "references": {}
+    }
+  ]
+}

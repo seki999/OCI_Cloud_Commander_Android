@@ -1,0 +1,108 @@
+{
+  "levelId": "oci-008",
+  "golden": [
+    {
+      "type": "create",
+      "resource": {
+        "id": "app-sub",
+        "kind": "SUBNET",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "cidr": "10.10.2.0/24",
+          "public": "false"
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      }
+    },
+    {
+      "type": "create",
+      "resource": {
+        "id": "db-sub",
+        "kind": "SUBNET",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "cidr": "10.10.3.0/24",
+          "public": "false"
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      }
+    },
+    {
+      "type": "update",
+      "id": "app",
+      "patch": {
+        "privateIp": "10.10.2.10",
+        "publicIp": ""
+      },
+      "references": {
+        "subnet": "app-sub"
+      }
+    },
+    {
+      "type": "update",
+      "id": "db",
+      "patch": {
+        "privateIp": "10.10.3.10",
+        "publicIp": ""
+      },
+      "references": {
+        "subnet": "db-sub"
+      }
+    },
+    {
+      "type": "inspect",
+      "id": "dev"
+    }
+  ],
+  "negative": [
+    {
+      "type": "create",
+      "resource": {
+        "id": "app-sub",
+        "kind": "SUBNET",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "cidr": "10.10.2.0/24",
+          "public": "false"
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      }
+    },
+    {
+      "type": "create",
+      "resource": {
+        "id": "db-sub",
+        "kind": "SUBNET",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "cidr": "10.10.3.0/24",
+          "public": "false"
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      }
+    },
+    {
+      "type": "update",
+      "id": "app",
+      "patch": {
+        "privateIp": "10.10.2.10",
+        "publicIp": ""
+      },
+      "references": {
+        "subnet": "app-sub"
+      }
+    }
+  ]
+}

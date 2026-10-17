@@ -1,0 +1,35 @@
+{
+  "levelId": "oci-021",
+  "golden": [
+    {
+      "type": "update",
+      "id": "logs-bkt",
+      "patch": {
+        "lifecycle": "logs/|archive:30|delete:90"
+      },
+      "references": {}
+    },
+    {
+      "type": "advance_tick",
+      "ticks": 1
+    },
+    {
+      "type": "inspect",
+      "id": "dev"
+    }
+  ],
+  "negative": [
+    {
+      "type": "update",
+      "id": "logs-bkt",
+      "patch": {
+        "lifecycle": "logs/|archive:30|delete:40"
+      },
+      "references": {}
+    },
+    {
+      "type": "advance_tick",
+      "ticks": 1
+    }
+  ]
+}

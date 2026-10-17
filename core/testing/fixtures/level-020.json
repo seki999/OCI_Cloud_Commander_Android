@@ -1,0 +1,43 @@
+{
+  "levelId": "oci-020",
+  "golden": [
+    {
+      "type": "update",
+      "id": "reports",
+      "patch": {
+        "visibility": "private"
+      },
+      "references": {}
+    },
+    {
+      "type": "update",
+      "id": "reports-read",
+      "patch": {
+        "verb": "read"
+      },
+      "references": {}
+    },
+    {
+      "type": "inspect",
+      "id": "dev"
+    }
+  ],
+  "negative": [
+    {
+      "type": "update",
+      "id": "reports",
+      "patch": {
+        "visibility": "private"
+      },
+      "references": {}
+    },
+    {
+      "type": "update",
+      "id": "reports-read",
+      "patch": {
+        "verb": "manage"
+      },
+      "references": {}
+    }
+  ]
+}

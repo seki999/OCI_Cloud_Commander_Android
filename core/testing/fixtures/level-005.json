@@ -1,0 +1,75 @@
+{
+  "levelId": "oci-005",
+  "golden": [
+    {
+      "type": "create",
+      "resource": {
+        "id": "workloads",
+        "kind": "DYNAMIC_GROUP",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "matchInstance": "worker",
+          "matchCompartment": "dev"
+        },
+        "references": {}
+      }
+    },
+    {
+      "type": "create",
+      "resource": {
+        "id": "bucket-read",
+        "kind": "POLICY",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "verb": "read",
+          "resourceType": "BUCKET",
+          "scope": "dev",
+          "targetId": "bucket"
+        },
+        "references": {
+          "group": "workloads"
+        }
+      }
+    },
+    {
+      "type": "inspect",
+      "id": "dev"
+    }
+  ],
+  "negative": [
+    {
+      "type": "create",
+      "resource": {
+        "id": "workloads",
+        "kind": "DYNAMIC_GROUP",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "matchInstance": "other",
+          "matchCompartment": "dev"
+        },
+        "references": {}
+      }
+    },
+    {
+      "type": "create",
+      "resource": {
+        "id": "bucket-read",
+        "kind": "POLICY",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "verb": "read",
+          "resourceType": "BUCKET",
+          "scope": "dev",
+          "targetId": "bucket"
+        },
+        "references": {
+          "group": "workloads"
+        }
+      }
+    }
+  ]
+}

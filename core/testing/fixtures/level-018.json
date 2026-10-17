@@ -1,0 +1,63 @@
+{
+  "levelId": "oci-018",
+  "golden": [
+    {
+      "type": "update",
+      "id": "data-vol",
+      "patch": {},
+      "references": {
+        "attachedTo": "app"
+      }
+    },
+    {
+      "type": "update",
+      "id": "app-nsg",
+      "patch": {
+        "rules": "ingress|10.10.1.0/24|tcp|8080|stateful;ingress|10.10.2.5/32|tcp|22|stateful"
+      },
+      "references": {}
+    },
+    {
+      "type": "power",
+      "id": "app",
+      "value": "START"
+    },
+    {
+      "type": "inspect",
+      "id": "dev"
+    }
+  ],
+  "negative": [
+    {
+      "type": "create",
+      "resource": {
+        "id": "new-data",
+        "kind": "VOLUME",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "sizeGb": "200",
+          "mountPoint": "/data",
+          "backupPolicy": "none"
+        },
+        "references": {
+          "sourceBackup": "data-bk-old",
+          "attachedTo": "app"
+        }
+      }
+    },
+    {
+      "type": "update",
+      "id": "app-nsg",
+      "patch": {
+        "rules": "ingress|10.10.1.0/24|tcp|8080|stateful;ingress|10.10.2.5/32|tcp|22|stateful"
+      },
+      "references": {}
+    },
+    {
+      "type": "power",
+      "id": "app",
+      "value": "START"
+    }
+  ]
+}

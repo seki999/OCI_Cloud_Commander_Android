@@ -1,0 +1,95 @@
+{
+  "levelId": "oci-010",
+  "golden": [
+    {
+      "type": "create",
+      "resource": {
+        "id": "nat",
+        "kind": "NAT",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "enabled": "true"
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      }
+    },
+    {
+      "type": "create",
+      "resource": {
+        "id": "private-rt",
+        "kind": "ROUTE_TABLE",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "routes": "0.0.0.0/0>nat"
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      }
+    },
+    {
+      "type": "update",
+      "id": "app-sub",
+      "patch": {},
+      "references": {
+        "routeTable": "private-rt"
+      }
+    },
+    {
+      "type": "update",
+      "id": "app-nsg",
+      "patch": {
+        "rules": "egress|0.0.0.0/0|tcp|443|stateful"
+      },
+      "references": {}
+    },
+    {
+      "type": "inspect",
+      "id": "dev"
+    }
+  ],
+  "negative": [
+    {
+      "type": "create",
+      "resource": {
+        "id": "nat",
+        "kind": "NAT",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "enabled": "true"
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      }
+    },
+    {
+      "type": "create",
+      "resource": {
+        "id": "private-rt",
+        "kind": "ROUTE_TABLE",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "routes": "0.0.0.0/0>nat"
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      }
+    },
+    {
+      "type": "update",
+      "id": "app-sub",
+      "patch": {},
+      "references": {
+        "routeTable": "private-rt"
+      }
+    }
+  ]
+}

@@ -1,0 +1,157 @@
+{
+  "schemaVersion": 1,
+  "id": "oci-007",
+  "chapter": 2,
+  "order": 7,
+  "titleKey": "levels.007.title",
+  "scenario": {
+    "region": "ap-tokyo-1",
+    "briefKey": "levels.007.brief",
+    "seed": 701
+  },
+  "initialWorld": {
+    "schemaVersion": 1,
+    "levelId": "oci-007",
+    "seed": 701,
+    "region": "ap-tokyo-1",
+    "resources": {
+      "dev": {
+        "id": "dev",
+        "kind": "COMPARTMENT",
+        "compartment": "root",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "name": "dev",
+          "parent": "root"
+        },
+        "references": {}
+      },
+      "prod": {
+        "id": "prod",
+        "kind": "COMPARTMENT",
+        "compartment": "root",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "name": "prod",
+          "parent": "root"
+        },
+        "references": {}
+      }
+    },
+    "principals": [
+      {
+        "id": "commander"
+      },
+      {
+        "id": "newcomer"
+      }
+    ]
+  },
+  "allowedActions": [
+    "select_region",
+    "study_card",
+    "create",
+    "update",
+    "delete",
+    "inspect",
+    "probe",
+    "advance_tick",
+    "hint",
+    "move"
+  ],
+  "steps": [
+    {
+      "id": "s1",
+      "textKey": "levels.007.step1",
+      "hintKeys": [
+        "levels.007.hint1"
+      ]
+    },
+    {
+      "id": "s2",
+      "textKey": "levels.007.step2",
+      "hintKeys": [
+        "levels.007.hint2"
+      ]
+    }
+  ],
+  "objectives": [
+    {
+      "id": "vcn-cidr",
+      "predicate": "resource.propertyEquals",
+      "params": {
+        "id": "vcn",
+        "key": "cidr",
+        "value": "10.10.0.0/16"
+      },
+      "messageKey": "goals.vcn-cidr"
+    },
+    {
+      "id": "web-sub-cidr",
+      "predicate": "resource.propertyEquals",
+      "params": {
+        "id": "web-sub",
+        "key": "cidr",
+        "value": "10.10.1.0/24"
+      },
+      "messageKey": "goals.web-sub-cidr"
+    },
+    {
+      "id": "contained",
+      "predicate": "network.subnetContained",
+      "params": {
+        "id": "web-sub",
+        "vcn": "vcn"
+      },
+      "messageKey": "goals.contained"
+    },
+    {
+      "id": "no-overlap",
+      "predicate": "network.nonOverlapping",
+      "params": {},
+      "messageKey": "goals.no-overlap"
+    }
+  ],
+  "constraints": [
+    {
+      "id": "safe-7",
+      "predicate": "iam.leastPrivilege",
+      "params": {},
+      "messageKey": "goals.safe-7"
+    }
+  ],
+  "optionalObjectives": [
+    {
+      "id": "evidence-7",
+      "predicate": "logging.evidenceFound",
+      "params": {
+        "id": "dev"
+      },
+      "messageKey": "goals.evidence-7"
+    }
+  ],
+  "failureTriggers": [
+    {
+      "id": "broad-7",
+      "predicate": "iam.hasBroadPermissions",
+      "params": {},
+      "messageKey": "goals.broad-7"
+    }
+  ],
+  "tutorialKeys": [
+    "levels.007.tutorial"
+  ],
+  "optimalActionLimit": 3,
+  "reward": {
+    "xp": 250,
+    "maxStars": 3,
+    "badgeId": ""
+  },
+  "dependsOn": [
+    "oci-006"
+  ],
+  "products": {
+    "vcn": "VCN",
+    "web-sub": "SUBNET"
+  }
+}

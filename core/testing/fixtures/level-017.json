@@ -1,0 +1,93 @@
+{
+  "levelId": "oci-017",
+  "golden": [
+    {
+      "type": "update",
+      "id": "orders-vol",
+      "patch": {
+        "backupPolicy": "silver"
+      },
+      "references": {}
+    },
+    {
+      "type": "create",
+      "resource": {
+        "id": "orders-bk",
+        "kind": "VOLUME_BACKUP",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "type": "FULL"
+        },
+        "references": {
+          "volume": "orders-vol"
+        }
+      }
+    },
+    {
+      "type": "create",
+      "resource": {
+        "id": "restore-test",
+        "kind": "VOLUME",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "sizeGb": "200",
+          "mountPoint": "/restore",
+          "backupPolicy": "none"
+        },
+        "references": {
+          "sourceBackup": "orders-bk",
+          "attachedTo": "test-vm"
+        }
+      }
+    },
+    {
+      "type": "inspect",
+      "id": "dev"
+    }
+  ],
+  "negative": [
+    {
+      "type": "update",
+      "id": "orders-vol",
+      "patch": {
+        "backupPolicy": "silver"
+      },
+      "references": {}
+    },
+    {
+      "type": "create",
+      "resource": {
+        "id": "orders-bk",
+        "kind": "VOLUME_BACKUP",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "type": "FULL"
+        },
+        "references": {
+          "volume": "orders-vol"
+        }
+      }
+    },
+    {
+      "type": "create",
+      "resource": {
+        "id": "restore-test",
+        "kind": "VOLUME",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "sizeGb": "200",
+          "mountPoint": "/restore",
+          "backupPolicy": "none"
+        },
+        "references": {
+          "sourceBackup": "orders-bk",
+          "attachedTo": "app"
+        }
+      }
+    }
+  ]
+}

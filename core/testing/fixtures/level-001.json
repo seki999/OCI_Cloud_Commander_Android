@@ -1,0 +1,51 @@
+{
+  "levelId": "oci-001",
+  "golden": [
+    {
+      "type": "select_region",
+      "value": "ap-tokyo-1"
+    },
+    {
+      "type": "study_card",
+      "id": "Tenancy"
+    },
+    {
+      "type": "study_card",
+      "id": "Region"
+    },
+    {
+      "type": "study_card",
+      "id": "AD"
+    },
+    {
+      "type": "study_card",
+      "id": "FD"
+    },
+    {
+      "type": "inspect",
+      "id": "root"
+    }
+  ],
+  "negative": [
+    {
+      "type": "select_region",
+      "value": "ap-osaka-1"
+    },
+    {
+      "type": "study_card",
+      "id": "Tenancy"
+    },
+    {
+      "type": "study_card",
+      "id": "Region"
+    },
+    {
+      "type": "study_card",
+      "id": "AD"
+    },
+    {
+      "type": "study_card",
+      "id": "FD"
+    }
+  ]
+}

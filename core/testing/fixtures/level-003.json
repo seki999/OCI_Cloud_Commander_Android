@@ -1,0 +1,73 @@
+{
+  "levelId": "oci-003",
+  "golden": [
+    {
+      "type": "create",
+      "resource": {
+        "id": "operators",
+        "kind": "GROUP",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "members": "newcomer"
+        },
+        "references": {}
+      }
+    },
+    {
+      "type": "create",
+      "resource": {
+        "id": "read-dev",
+        "kind": "POLICY",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "verb": "read",
+          "resourceType": "COMPUTE",
+          "scope": "dev",
+          "targetId": ""
+        },
+        "references": {
+          "group": "operators"
+        }
+      }
+    },
+    {
+      "type": "inspect",
+      "id": "dev"
+    }
+  ],
+  "negative": [
+    {
+      "type": "create",
+      "resource": {
+        "id": "operators",
+        "kind": "GROUP",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "members": "newcomer"
+        },
+        "references": {}
+      }
+    },
+    {
+      "type": "create",
+      "resource": {
+        "id": "read-dev",
+        "kind": "POLICY",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "verb": "inspect",
+          "resourceType": "COMPUTE",
+          "scope": "dev",
+          "targetId": ""
+        },
+        "references": {
+          "group": "operators"
+        }
+      }
+    }
+  ]
+}

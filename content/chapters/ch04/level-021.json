@@ -1,0 +1,358 @@
+{
+  "schemaVersion": 1,
+  "id": "oci-021",
+  "chapter": 4,
+  "order": 21,
+  "titleKey": "levels.021.title",
+  "scenario": {
+    "region": "ap-tokyo-1",
+    "briefKey": "levels.021.brief",
+    "seed": 2101
+  },
+  "initialWorld": {
+    "schemaVersion": 1,
+    "levelId": "oci-021",
+    "seed": 2101,
+    "tick": 100,
+    "region": "ap-tokyo-1",
+    "resources": {
+      "dev": {
+        "id": "dev",
+        "kind": "COMPARTMENT",
+        "compartment": "root",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "name": "dev",
+          "parent": "root"
+        },
+        "references": {}
+      },
+      "prod": {
+        "id": "prod",
+        "kind": "COMPARTMENT",
+        "compartment": "root",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "name": "prod",
+          "parent": "root"
+        },
+        "references": {}
+      },
+      "vcn": {
+        "id": "vcn",
+        "kind": "VCN",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "cidr": "10.10.0.0/16"
+        },
+        "references": {}
+      },
+      "igw": {
+        "id": "igw",
+        "kind": "IGW",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "enabled": "true"
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      },
+      "public-rt": {
+        "id": "public-rt",
+        "kind": "ROUTE_TABLE",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "routes": "0.0.0.0/0>igw"
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      },
+      "web-sub": {
+        "id": "web-sub",
+        "kind": "SUBNET",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "cidr": "10.10.1.0/24",
+          "public": "true"
+        },
+        "references": {
+          "vcn": "vcn",
+          "routeTable": "public-rt"
+        }
+      },
+      "app-sub": {
+        "id": "app-sub",
+        "kind": "SUBNET",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "cidr": "10.10.2.0/24",
+          "public": "false"
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      },
+      "db-sub": {
+        "id": "db-sub",
+        "kind": "SUBNET",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "cidr": "10.10.3.0/24",
+          "public": "false"
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      },
+      "web-nsg": {
+        "id": "web-nsg",
+        "kind": "NSG",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "rules": ""
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      },
+      "app-nsg": {
+        "id": "app-nsg",
+        "kind": "NSG",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "rules": ""
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      },
+      "db-nsg": {
+        "id": "db-nsg",
+        "kind": "NSG",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "rules": ""
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      },
+      "logs-bkt": {
+        "id": "logs-bkt",
+        "kind": "BUCKET",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "visibility": "private",
+          "lifecycle": ""
+        },
+        "references": {}
+      },
+      "old-log": {
+        "id": "old-log",
+        "kind": "OBJECT",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "name": "logs/2030-01.log",
+          "sizeMb": "40000",
+          "tier": "STANDARD",
+          "createdTick": "0"
+        },
+        "references": {
+          "bucket": "logs-bkt"
+        }
+      },
+      "mid-log": {
+        "id": "mid-log",
+        "kind": "OBJECT",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "name": "logs/2030-03.log",
+          "sizeMb": "30000",
+          "tier": "STANDARD",
+          "createdTick": "50"
+        },
+        "references": {
+          "bucket": "logs-bkt"
+        }
+      },
+      "new-log": {
+        "id": "new-log",
+        "kind": "OBJECT",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "name": "logs/2030-04.log",
+          "sizeMb": "5000",
+          "tier": "STANDARD",
+          "createdTick": "95"
+        },
+        "references": {
+          "bucket": "logs-bkt"
+        }
+      },
+      "report": {
+        "id": "report",
+        "kind": "OBJECT",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "name": "reports/annual-2029.pdf",
+          "sizeMb": "500",
+          "tier": "STANDARD",
+          "createdTick": "0"
+        },
+        "references": {
+          "bucket": "logs-bkt"
+        }
+      }
+    },
+    "principals": [
+      {
+        "id": "commander"
+      },
+      {
+        "id": "newcomer"
+      }
+    ],
+    "budgetCredits": 60.0,
+    "requestRate": 0
+  },
+  "allowedActions": [
+    "select_region",
+    "study_card",
+    "create",
+    "update",
+    "delete",
+    "inspect",
+    "probe",
+    "advance_tick",
+    "hint",
+    "move",
+    "power",
+    "ssh",
+    "dig",
+    "http"
+  ],
+  "steps": [
+    {
+      "id": "s1",
+      "textKey": "levels.021.step1",
+      "hintKeys": [
+        "levels.021.hint1"
+      ]
+    },
+    {
+      "id": "s2",
+      "textKey": "levels.021.step2",
+      "hintKeys": [
+        "levels.021.hint2"
+      ]
+    }
+  ],
+  "objectives": [
+    {
+      "id": "logs-policy",
+      "predicate": "storage.lifecycleConfigured",
+      "params": {
+        "bucket": "logs-bkt",
+        "prefix": "logs/",
+        "archiveDays": "30",
+        "deleteDays": "90"
+      },
+      "messageKey": "goals.logs-policy"
+    },
+    {
+      "id": "old-deleted",
+      "predicate": "resource.absent",
+      "params": {
+        "id": "old-log"
+      },
+      "messageKey": "goals.old-deleted"
+    },
+    {
+      "id": "mid-archived",
+      "predicate": "storage.objectTier",
+      "params": {
+        "id": "mid-log",
+        "tier": "ARCHIVE"
+      },
+      "messageKey": "goals.mid-archived"
+    },
+    {
+      "id": "new-standard",
+      "predicate": "storage.objectTier",
+      "params": {
+        "id": "new-log",
+        "tier": "STANDARD"
+      },
+      "messageKey": "goals.new-standard"
+    },
+    {
+      "id": "lifecycle-budget",
+      "predicate": "cost.underBudget",
+      "params": {},
+      "messageKey": "goals.lifecycle-budget"
+    }
+  ],
+  "constraints": [
+    {
+      "id": "safe-21",
+      "predicate": "iam.leastPrivilege",
+      "params": {},
+      "messageKey": "goals.safe-21"
+    }
+  ],
+  "optionalObjectives": [
+    {
+      "id": "evidence-21",
+      "predicate": "logging.evidenceFound",
+      "params": {
+        "id": "dev"
+      },
+      "messageKey": "goals.evidence-21"
+    }
+  ],
+  "failureTriggers": [
+    {
+      "id": "report-deleted",
+      "predicate": "resource.absent",
+      "params": {
+        "id": "report"
+      },
+      "messageKey": "goals.report-deleted"
+    },
+    {
+      "id": "broad-21",
+      "predicate": "iam.hasBroadPermissions",
+      "params": {},
+      "messageKey": "goals.broad-21"
+    }
+  ],
+  "tutorialKeys": [
+    "levels.021.tutorial"
+  ],
+  "optimalActionLimit": 3,
+  "reward": {
+    "xp": 396,
+    "maxStars": 3,
+    "badgeId": ""
+  },
+  "dependsOn": [
+    "oci-020"
+  ],
+  "products": {}
+}

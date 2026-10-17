@@ -1,0 +1,1814 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^oci-[0-9]{3}$"
+    },
+    "chapter": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 10
+    },
+    "order": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 60
+    },
+    "titleKey": {
+      "type": "string"
+    },
+    "scenario": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "region": {
+          "enum": [
+            "ap-tokyo-1",
+            "ap-osaka-1",
+            "us-ashburn-1"
+          ]
+        },
+        "briefKey": {
+          "type": "string"
+        },
+        "seed": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "region",
+        "briefKey",
+        "seed"
+      ]
+    },
+    "initialWorld": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "levelId": {
+          "type": "string"
+        },
+        "seed": {
+          "type": "integer"
+        },
+        "tick": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "region": {
+          "type": "string"
+        },
+        "resources": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/resource"
+          }
+        },
+        "principals": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "instanceId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id"
+            ]
+          }
+        },
+        "studiedCards": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "events": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "sequence": {
+                "type": "integer"
+              },
+              "tick": {
+                "type": "integer"
+              },
+              "actor": {
+                "type": "string"
+              },
+              "action": {
+                "type": "string"
+              },
+              "detail": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "sequence",
+              "tick",
+              "actor",
+              "action",
+              "detail"
+            ]
+          }
+        },
+        "changes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "hintsUsed": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "budgetCredits": {
+          "type": "number",
+          "minimum": 0
+        },
+        "layout": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "x": {
+                "type": "integer"
+              },
+              "y": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "x",
+              "y"
+            ]
+          }
+        },
+        "requestRate": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "levelId",
+        "seed",
+        "region",
+        "resources",
+        "principals"
+      ]
+    },
+    "allowedActions": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "select_region",
+          "study_card",
+          "create",
+          "update",
+          "delete",
+          "inspect",
+          "probe",
+          "advance_tick",
+          "hint",
+          "move",
+          "power",
+          "ssh",
+          "dig",
+          "http"
+        ]
+      }
+    },
+    "steps": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "textKey": {
+            "type": "string"
+          },
+          "hintKeys": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "textKey",
+          "hintKeys"
+        ]
+      }
+    },
+    "objectives": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/objective"
+      }
+    },
+    "constraints": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/objective"
+      }
+    },
+    "optionalObjectives": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/objective"
+      }
+    },
+    "failureTriggers": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/objective"
+      }
+    },
+    "tutorialKeys": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "optimalActionLimit": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "reward": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "xp": {
+          "type": "integer",
+          "minimum": 100,
+          "maximum": 500
+        },
+        "maxStars": {
+          "const": 3
+        },
+        "badgeId": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "xp",
+        "maxStars",
+        "badgeId"
+      ]
+    },
+    "dependsOn": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "products": {
+      "type": "object",
+      "additionalProperties": {
+        "enum": [
+          "COMPARTMENT",
+          "GROUP",
+          "DYNAMIC_GROUP",
+          "POLICY",
+          "VCN",
+          "SUBNET",
+          "IGW",
+          "NAT",
+          "SERVICE_GATEWAY",
+          "ROUTE_TABLE",
+          "NSG",
+          "COMPUTE",
+          "BUCKET",
+          "BASTION",
+          "BASTION_SESSION",
+          "VOLUME",
+          "VOLUME_BACKUP",
+          "OBJECT",
+          "DATABASE",
+          "DB_BACKUP",
+          "LOAD_BALANCER",
+          "DNS_ZONE",
+          "CERTIFICATE"
+        ]
+      }
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "id",
+    "chapter",
+    "order",
+    "titleKey",
+    "scenario",
+    "initialWorld",
+    "allowedActions",
+    "steps",
+    "objectives",
+    "constraints",
+    "optionalObjectives",
+    "failureTriggers",
+    "tutorialKeys",
+    "optimalActionLimit",
+    "reward",
+    "dependsOn",
+    "products"
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/schemas/oci-level.schema.json",
+  "$defs": {
+    "resource": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]{0,39}$"
+        },
+        "kind": {
+          "enum": [
+            "COMPARTMENT",
+            "GROUP",
+            "DYNAMIC_GROUP",
+            "POLICY",
+            "VCN",
+            "SUBNET",
+            "IGW",
+            "NAT",
+            "SERVICE_GATEWAY",
+            "ROUTE_TABLE",
+            "NSG",
+            "COMPUTE",
+            "BUCKET",
+            "BASTION",
+            "BASTION_SESSION",
+            "VOLUME",
+            "VOLUME_BACKUP",
+            "OBJECT",
+            "DATABASE",
+            "DB_BACKUP",
+            "LOAD_BALANCER",
+            "DNS_ZONE",
+            "CERTIFICATE"
+          ]
+        },
+        "compartment": {
+          "type": "string"
+        },
+        "region": {
+          "enum": [
+            "ap-tokyo-1",
+            "ap-osaka-1",
+            "us-ashburn-1"
+          ]
+        },
+        "properties": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "references": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "kind",
+        "compartment",
+        "region",
+        "properties",
+        "references"
+      ]
+    },
+    "objective": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "predicate": {
+              "const": "compute.diskHealthy"
+            },
+            "params": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id"
+              ]
+            },
+            "messageKey": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "predicate",
+            "params",
+            "messageKey"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "predicate": {
+              "const": "compute.running"
+            },
+            "params": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id"
+              ]
+            },
+            "messageKey": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "predicate",
+            "params",
+            "messageKey"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "predicate": {
+              "const": "concept.studied"
+            },
+            "params": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "card": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "card"
+              ]
+            },
+            "messageKey": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "predicate",
+            "params",
+            "messageKey"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "predicate": {
+              "const": "cost.underBudget"
+            },
+            "params": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {},
+              "required": []
+            },
+            "messageKey": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "predicate",
+            "params",
+            "messageKey"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "predicate": {
+              "const": "db.backupFresh"
+            },
+            "params": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "maxAge": {
+                  "type": "string"
+                },
+                "minRetention": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "maxAge",
+                "minRetention"
+              ]
+            },
+            "messageKey": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "predicate",
+            "params",
+            "messageKey"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "predicate": {
+              "const": "db.connected"
+            },
+            "params": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "app": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "app"
+              ]
+            },
+            "messageKey": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "predicate",
+            "params",
+            "messageKey"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "predicate": {
+              "const": "db.dataChecksumEquals"
+            },
+            "params": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "app": {
+                  "type": "string"
+                },
+                "checksum": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "app",
+                "checksum"
+              ]
+            },
+            "messageKey": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "predicate",
+            "params",
+            "messageKey"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "predicate": {
+              "const": "db.rpoWithin"
+            },
+            "params": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "app": {
+                  "type": "string"
+                },
+                "maxTicks": {
+                  "type": "string"
+                },
+                "source": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "app",
+                "maxTicks",
+                "source"
+              ]
+            },
+            "messageKey": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "predicate",
+            "params",
+            "messageKey"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "predicate": {
+              "const": "dns.resolves"
+            },
+            "params": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "target": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "name",
+                "target"
+              ]
+            },
+            "messageKey": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "predicate",
+            "params",
+            "messageKey"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "predicate": {
+              "const": "iam.denies"
+            },
+            "params": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "compartment": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "kind": {
+                  "type": "string"
+                },
+                "principal": {
+                  "type": "string"
+                },
+                "verb": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "compartment",
+                "id",
+                "kind",
+                "principal",
+                "verb"
+              ]
+            },
+            "messageKey": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "predicate",
+            "params",
+            "messageKey"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "predicate": {
+              "const": "iam.hasBroadPermissions"
+            },
+            "params": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {},
+              "required": []
+            },
+            "messageKey": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "predicate",
+            "params",
+            "messageKey"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "predicate": {
+              "const": "iam.leastPrivilege"
+            },
+            "params": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {},
+              "required": []
+            },
+            "messageKey": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "predicate",
+            "params",
+            "messageKey"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "predicate": {
+              "const": "iam.permits"
+            },
+            "params": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "compartment": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "kind": {
+                  "type": "string"
+                },
+                "principal": {
+                  "type": "string"
+                },
+                "verb": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "compartment",
+                "id",
+                "kind",
+                "principal",
+                "verb"
+              ]
+            },
+            "messageKey": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "predicate",
+            "params",
+            "messageKey"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "predicate": {
+              "const": "lb.backendsHealthy"
+            },
+            "params": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "min": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "min"
+              ]
+            },
+            "messageKey": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "predicate",
+            "params",
+            "messageKey"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "predicate": {
+              "const": "lb.httpRedirect"
+            },
+            "params": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id"
+              ]
+            },
+            "messageKey": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "predicate",
+            "params",
+            "messageKey"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "predicate": {
+              "const": "logging.evidenceFound"
+            },
+            "params": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id"
+              ]
+            },
+            "messageKey": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "predicate",
+            "params",
+            "messageKey"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "predicate": {
+              "const": "network.nonOverlapping"
+            },
+            "params": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {},
+              "required": []
+            },
+            "messageKey": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "predicate",
+            "params",
+            "messageKey"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "predicate": {
+              "const": "network.publicAddressable"
+            },
+            "params": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "value": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "value"
+              ]
+            },
+            "messageKey": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "predicate",
+            "params",
+            "messageKey"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "predicate": {
+              "const": "network.reachable"
+            },
+            "params": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "destination": {
+                  "type": "string"
+                },
+                "port": {
+                  "type": "string"
+                },
+                "source": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "destination",
+                "port",
+                "source"
+              ]
+            },
+            "messageKey": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "predicate",
+            "params",
+            "messageKey"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "predicate": {
+              "const": "network.subnetContained"
+            },
+            "params": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "vcn": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "vcn"
+              ]
+            },
+            "messageKey": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "predicate",
+            "params",
+            "messageKey"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "predicate": {
+              "const": "network.unreachable"
+            },
+            "params": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "destination": {
+                  "type": "string"
+                },
+                "port": {
+                  "type": "string"
+                },
+                "source": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "destination",
+                "port",
+                "source"
+              ]
+            },
+            "messageKey": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "predicate",
+            "params",
+            "messageKey"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "predicate": {
+              "const": "portal.endToEnd"
+            },
+            "params": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "minBackends": {
+                  "type": "string"
+                },
+                "url": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "minBackends",
+                "url"
+              ]
+            },
+            "messageKey": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "predicate",
+            "params",
+            "messageKey"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "predicate": {
+              "const": "resource.absent"
+            },
+            "params": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id"
+              ]
+            },
+            "messageKey": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "predicate",
+            "params",
+            "messageKey"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "predicate": {
+              "const": "resource.compartmentEquals"
+            },
+            "params": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "compartment": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "compartment",
+                "id"
+              ]
+            },
+            "messageKey": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "predicate",
+            "params",
+            "messageKey"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "predicate": {
+              "const": "resource.exists"
+            },
+            "params": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "kind": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "kind"
+              ]
+            },
+            "messageKey": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "predicate",
+            "params",
+            "messageKey"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "predicate": {
+              "const": "resource.propertyEquals"
+            },
+            "params": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "key": {
+                  "type": "string"
+                },
+                "value": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "key",
+                "value"
+              ]
+            },
+            "messageKey": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "predicate",
+            "params",
+            "messageKey"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "predicate": {
+              "const": "resource.referenceEquals"
+            },
+            "params": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "key": {
+                  "type": "string"
+                },
+                "value": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "key",
+                "value"
+              ]
+            },
+            "messageKey": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "predicate",
+            "params",
+            "messageKey"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "predicate": {
+              "const": "security.privateInstances"
+            },
+            "params": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "ids": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "ids"
+              ]
+            },
+            "messageKey": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "predicate",
+            "params",
+            "messageKey"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "predicate": {
+              "const": "slo.meetsTarget"
+            },
+            "params": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "maxLatencyMs": {
+                  "type": "string"
+                },
+                "minSuccessPct": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "maxLatencyMs",
+                "minSuccessPct"
+              ]
+            },
+            "messageKey": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "predicate",
+            "params",
+            "messageKey"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "predicate": {
+              "const": "ssh.allowed"
+            },
+            "params": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "client": {
+                  "type": "string"
+                },
+                "target": {
+                  "type": "string"
+                },
+                "via": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "client",
+                "target",
+                "via"
+              ]
+            },
+            "messageKey": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "predicate",
+            "params",
+            "messageKey"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "predicate": {
+              "const": "ssh.denied"
+            },
+            "params": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "client": {
+                  "type": "string"
+                },
+                "target": {
+                  "type": "string"
+                },
+                "via": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "client",
+                "target",
+                "via"
+              ]
+            },
+            "messageKey": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "predicate",
+            "params",
+            "messageKey"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "predicate": {
+              "const": "storage.backupRestorable"
+            },
+            "params": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "restored": {
+                  "type": "string"
+                },
+                "source": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "restored",
+                "source"
+              ]
+            },
+            "messageKey": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "predicate",
+            "params",
+            "messageKey"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "predicate": {
+              "const": "storage.lifecycleConfigured"
+            },
+            "params": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "archiveDays": {
+                  "type": "string"
+                },
+                "bucket": {
+                  "type": "string"
+                },
+                "deleteDays": {
+                  "type": "string"
+                },
+                "prefix": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "archiveDays",
+                "bucket",
+                "deleteDays",
+                "prefix"
+              ]
+            },
+            "messageKey": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "predicate",
+            "params",
+            "messageKey"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "predicate": {
+              "const": "storage.objectRestricted"
+            },
+            "params": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "bucket": {
+                  "type": "string"
+                },
+                "principal": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "bucket",
+                "principal"
+              ]
+            },
+            "messageKey": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "predicate",
+            "params",
+            "messageKey"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "predicate": {
+              "const": "storage.objectTier"
+            },
+            "params": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "tier": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "tier"
+              ]
+            },
+            "messageKey": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "predicate",
+            "params",
+            "messageKey"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "predicate": {
+              "const": "storage.protected"
+            },
+            "params": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id"
+              ]
+            },
+            "messageKey": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "predicate",
+            "params",
+            "messageKey"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "predicate": {
+              "const": "tls.validHostname"
+            },
+            "params": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "host": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "host",
+                "id"
+              ]
+            },
+            "messageKey": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "predicate",
+            "params",
+            "messageKey"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "predicate": {
+              "const": "world.region"
+            },
+            "params": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "value": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "messageKey": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "predicate",
+            "params",
+            "messageKey"
+          ]
+        }
+      ]
+    }
+  }
+}

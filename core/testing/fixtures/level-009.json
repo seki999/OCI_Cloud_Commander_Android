@@ -1,0 +1,95 @@
+{
+  "levelId": "oci-009",
+  "golden": [
+    {
+      "type": "create",
+      "resource": {
+        "id": "igw",
+        "kind": "IGW",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "enabled": "true"
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      }
+    },
+    {
+      "type": "create",
+      "resource": {
+        "id": "public-rt",
+        "kind": "ROUTE_TABLE",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "routes": "0.0.0.0/0>igw"
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      }
+    },
+    {
+      "type": "update",
+      "id": "web-sub",
+      "patch": {},
+      "references": {
+        "routeTable": "public-rt"
+      }
+    },
+    {
+      "type": "update",
+      "id": "web-nsg",
+      "patch": {
+        "rules": "egress|0.0.0.0/0|tcp|443|stateful"
+      },
+      "references": {}
+    },
+    {
+      "type": "inspect",
+      "id": "dev"
+    }
+  ],
+  "negative": [
+    {
+      "type": "create",
+      "resource": {
+        "id": "igw",
+        "kind": "IGW",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "enabled": "true"
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      }
+    },
+    {
+      "type": "create",
+      "resource": {
+        "id": "public-rt",
+        "kind": "ROUTE_TABLE",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "routes": "0.0.0.0/0>igw"
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      }
+    },
+    {
+      "type": "update",
+      "id": "web-sub",
+      "patch": {},
+      "references": {
+        "routeTable": "public-rt"
+      }
+    }
+  ]
+}

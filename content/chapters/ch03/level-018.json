@@ -1,0 +1,397 @@
+{
+  "schemaVersion": 1,
+  "id": "oci-018",
+  "chapter": 3,
+  "order": 18,
+  "titleKey": "levels.018.title",
+  "scenario": {
+    "region": "ap-tokyo-1",
+    "briefKey": "levels.018.brief",
+    "seed": 1801
+  },
+  "initialWorld": {
+    "schemaVersion": 1,
+    "levelId": "oci-018",
+    "seed": 1801,
+    "tick": 10,
+    "region": "ap-tokyo-1",
+    "resources": {
+      "dev": {
+        "id": "dev",
+        "kind": "COMPARTMENT",
+        "compartment": "root",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "name": "dev",
+          "parent": "root"
+        },
+        "references": {}
+      },
+      "prod": {
+        "id": "prod",
+        "kind": "COMPARTMENT",
+        "compartment": "root",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "name": "prod",
+          "parent": "root"
+        },
+        "references": {}
+      },
+      "vcn": {
+        "id": "vcn",
+        "kind": "VCN",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "cidr": "10.10.0.0/16"
+        },
+        "references": {}
+      },
+      "igw": {
+        "id": "igw",
+        "kind": "IGW",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "enabled": "true"
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      },
+      "public-rt": {
+        "id": "public-rt",
+        "kind": "ROUTE_TABLE",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "routes": "0.0.0.0/0>igw"
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      },
+      "web-sub": {
+        "id": "web-sub",
+        "kind": "SUBNET",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "cidr": "10.10.1.0/24",
+          "public": "true"
+        },
+        "references": {
+          "vcn": "vcn",
+          "routeTable": "public-rt"
+        }
+      },
+      "app-sub": {
+        "id": "app-sub",
+        "kind": "SUBNET",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "cidr": "10.10.2.0/24",
+          "public": "false"
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      },
+      "db-sub": {
+        "id": "db-sub",
+        "kind": "SUBNET",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "cidr": "10.10.3.0/24",
+          "public": "false"
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      },
+      "web-nsg": {
+        "id": "web-nsg",
+        "kind": "NSG",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "rules": "ingress|0.0.0.0/0|tcp|443|stateful;egress|10.10.2.0/24|tcp|8080|stateful"
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      },
+      "app-nsg": {
+        "id": "app-nsg",
+        "kind": "NSG",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "rules": "ingress|10.10.1.0/24|tcp|8080|stateful"
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      },
+      "db-nsg": {
+        "id": "db-nsg",
+        "kind": "NSG",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "rules": ""
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      },
+      "web": {
+        "id": "web",
+        "kind": "COMPUTE",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "status": "RUNNING",
+          "privateIp": "10.10.1.10",
+          "publicIp": "203.0.113.10",
+          "nsgs": "web-nsg",
+          "listenPorts": "443",
+          "sshKey": "ops-key",
+          "shape": "VM.Standard.E4.Flex.2",
+          "image": "Oracle-Linux-9"
+        },
+        "references": {
+          "subnet": "web-sub"
+        }
+      },
+      "app": {
+        "id": "app",
+        "kind": "COMPUTE",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "status": "STOPPED",
+          "privateIp": "10.10.2.10",
+          "publicIp": "",
+          "nsgs": "app-nsg",
+          "listenPorts": "8080,22",
+          "sshKey": "ops-key",
+          "shape": "VM.Standard.E4.Flex.2",
+          "image": "Oracle-Linux-9",
+          "logGb": "46",
+          "rootGb": "50",
+          "logPath": "/data/logs"
+        },
+        "references": {
+          "subnet": "app-sub"
+        }
+      },
+      "data-vol": {
+        "id": "data-vol",
+        "kind": "VOLUME",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "sizeGb": "200",
+          "mountPoint": "/data",
+          "backupPolicy": "silver",
+          "checksum": "sha256:c0ffee",
+          "dataVersion": "v77"
+        },
+        "references": {}
+      },
+      "data-bk-old": {
+        "id": "data-bk-old",
+        "kind": "VOLUME_BACKUP",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "type": "FULL",
+          "checksum": "sha256:0ld601",
+          "dataVersion": "v60",
+          "sizeGb": "200",
+          "createdTick": "3"
+        },
+        "references": {
+          "volume": "data-vol"
+        }
+      },
+      "bastion": {
+        "id": "bastion",
+        "kind": "BASTION",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "privateIp": "10.10.2.5",
+          "allowedCidr": "198.51.100.0/24"
+        },
+        "references": {
+          "subnet": "app-sub"
+        }
+      },
+      "bastion-ssh": {
+        "id": "bastion-ssh",
+        "kind": "BASTION_SESSION",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "port": "22",
+          "sshKey": "ops-key",
+          "ttlTicks": "180",
+          "expiresTick": "500"
+        },
+        "references": {
+          "bastion": "bastion",
+          "target": "app"
+        }
+      }
+    },
+    "principals": [
+      {
+        "id": "commander"
+      },
+      {
+        "id": "newcomer"
+      }
+    ],
+    "budgetCredits": 500.0,
+    "requestRate": 0
+  },
+  "allowedActions": [
+    "select_region",
+    "study_card",
+    "create",
+    "update",
+    "delete",
+    "inspect",
+    "probe",
+    "advance_tick",
+    "hint",
+    "move",
+    "power",
+    "ssh",
+    "dig",
+    "http"
+  ],
+  "steps": [
+    {
+      "id": "s1",
+      "textKey": "levels.018.step1",
+      "hintKeys": [
+        "levels.018.hint1"
+      ]
+    },
+    {
+      "id": "s2",
+      "textKey": "levels.018.step2",
+      "hintKeys": [
+        "levels.018.hint2"
+      ]
+    },
+    {
+      "id": "s3",
+      "textKey": "levels.018.step3",
+      "hintKeys": [
+        "levels.018.hint3"
+      ]
+    }
+  ],
+  "objectives": [
+    {
+      "id": "app-running",
+      "predicate": "compute.running",
+      "params": {
+        "id": "app"
+      },
+      "messageKey": "goals.app-running"
+    },
+    {
+      "id": "storm-disk",
+      "predicate": "compute.diskHealthy",
+      "params": {
+        "id": "app"
+      },
+      "messageKey": "goals.storm-disk"
+    },
+    {
+      "id": "storm-volume",
+      "predicate": "resource.referenceEquals",
+      "params": {
+        "id": "data-vol",
+        "key": "attachedTo",
+        "value": "app"
+      },
+      "messageKey": "goals.storm-volume"
+    },
+    {
+      "id": "ssh-operator-app-bastion-ok",
+      "predicate": "ssh.allowed",
+      "params": {
+        "client": "operator",
+        "target": "app",
+        "via": "bastion"
+      },
+      "messageKey": "goals.ssh-operator-app-bastion-ok"
+    },
+    {
+      "id": "web-app-8080-ok",
+      "predicate": "network.reachable",
+      "params": {
+        "source": "web",
+        "destination": "app",
+        "port": "8080"
+      },
+      "messageKey": "goals.web-app-8080-ok"
+    },
+    {
+      "id": "private-app",
+      "predicate": "security.privateInstances",
+      "params": {
+        "ids": "app"
+      },
+      "messageKey": "goals.private-app"
+    }
+  ],
+  "constraints": [
+    {
+      "id": "safe-18",
+      "predicate": "iam.leastPrivilege",
+      "params": {},
+      "messageKey": "goals.safe-18"
+    }
+  ],
+  "optionalObjectives": [
+    {
+      "id": "evidence-18",
+      "predicate": "logging.evidenceFound",
+      "params": {
+        "id": "dev"
+      },
+      "messageKey": "goals.evidence-18"
+    }
+  ],
+  "failureTriggers": [
+    {
+      "id": "broad-18",
+      "predicate": "iam.hasBroadPermissions",
+      "params": {},
+      "messageKey": "goals.broad-18"
+    }
+  ],
+  "tutorialKeys": [
+    "levels.018.tutorial"
+  ],
+  "optimalActionLimit": 4,
+  "reward": {
+    "xp": 500,
+    "maxStars": 3,
+    "badgeId": "server-medic"
+  },
+  "dependsOn": [
+    "oci-017"
+  ],
+  "products": {}
+}

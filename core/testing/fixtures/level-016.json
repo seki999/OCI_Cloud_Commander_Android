@@ -1,0 +1,61 @@
+{
+  "levelId": "oci-016",
+  "golden": [
+    {
+      "type": "create",
+      "resource": {
+        "id": "logs-vol",
+        "kind": "VOLUME",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "sizeGb": "100",
+          "mountPoint": "/data",
+          "backupPolicy": "none"
+        },
+        "references": {
+          "attachedTo": "app"
+        }
+      }
+    },
+    {
+      "type": "update",
+      "id": "app",
+      "patch": {
+        "logPath": "/data/logs"
+      },
+      "references": {}
+    },
+    {
+      "type": "inspect",
+      "id": "dev"
+    }
+  ],
+  "negative": [
+    {
+      "type": "create",
+      "resource": {
+        "id": "logs-vol",
+        "kind": "VOLUME",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "sizeGb": "50",
+          "mountPoint": "/data",
+          "backupPolicy": "none"
+        },
+        "references": {
+          "attachedTo": "app"
+        }
+      }
+    },
+    {
+      "type": "update",
+      "id": "app",
+      "patch": {
+        "logPath": "/data/logs"
+      },
+      "references": {}
+    }
+  ]
+}

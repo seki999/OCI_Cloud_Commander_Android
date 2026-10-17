@@ -1,0 +1,77 @@
+{
+  "levelId": "oci-023",
+  "golden": [
+    {
+      "type": "create",
+      "resource": {
+        "id": "orders-restore",
+        "kind": "DATABASE",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "privateIp": "10.10.3.21",
+          "nsgs": "db-nsg",
+          "port": "1521",
+          "adminSecret": "vault:orders-admin",
+          "autoBackup": "true",
+          "retentionDays": "30"
+        },
+        "references": {
+          "subnet": "db-sub",
+          "sourceBackup": "bk-70"
+        }
+      }
+    },
+    {
+      "type": "advance_tick",
+      "ticks": 5
+    },
+    {
+      "type": "update",
+      "id": "app",
+      "patch": {
+        "dbEndpoint": "orders-restore"
+      },
+      "references": {}
+    },
+    {
+      "type": "inspect",
+      "id": "dev"
+    }
+  ],
+  "negative": [
+    {
+      "type": "create",
+      "resource": {
+        "id": "orders-restore",
+        "kind": "DATABASE",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "privateIp": "10.10.3.21",
+          "nsgs": "db-nsg",
+          "port": "1521",
+          "adminSecret": "vault:orders-admin",
+          "autoBackup": "true",
+          "retentionDays": "30"
+        },
+        "references": {
+          "subnet": "db-sub",
+          "sourceBackup": "bk-78"
+        }
+      }
+    },
+    {
+      "type": "advance_tick",
+      "ticks": 5
+    },
+    {
+      "type": "update",
+      "id": "app",
+      "patch": {
+        "dbEndpoint": "orders-restore"
+      },
+      "references": {}
+    }
+  ]
+}

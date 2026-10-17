@@ -1,0 +1,76 @@
+{
+  "levelId": "oci-024",
+  "golden": [
+    {
+      "type": "update",
+      "id": "exports",
+      "patch": {
+        "visibility": "private"
+      },
+      "references": {}
+    },
+    {
+      "type": "update",
+      "id": "app",
+      "patch": {
+        "dbSecret": "vault:orders-2030"
+      },
+      "references": {}
+    },
+    {
+      "type": "update",
+      "id": "orders-db",
+      "patch": {
+        "autoBackup": "true",
+        "retentionDays": "30"
+      },
+      "references": {}
+    },
+    {
+      "type": "create",
+      "resource": {
+        "id": "orders-ondemand",
+        "kind": "DB_BACKUP",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "type": "FULL"
+        },
+        "references": {
+          "database": "orders-db"
+        }
+      }
+    },
+    {
+      "type": "inspect",
+      "id": "dev"
+    }
+  ],
+  "negative": [
+    {
+      "type": "update",
+      "id": "exports",
+      "patch": {
+        "visibility": "private"
+      },
+      "references": {}
+    },
+    {
+      "type": "update",
+      "id": "app",
+      "patch": {
+        "dbSecret": "vault:orders-2030"
+      },
+      "references": {}
+    },
+    {
+      "type": "update",
+      "id": "orders-db",
+      "patch": {
+        "autoBackup": "true",
+        "retentionDays": "30"
+      },
+      "references": {}
+    }
+  ]
+}

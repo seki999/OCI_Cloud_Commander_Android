@@ -1,0 +1,79 @@
+{
+  "levelId": "oci-030",
+  "golden": [
+    {
+      "type": "update",
+      "id": "starport-zone",
+      "patch": {
+        "records": "www|A|203.0.113.50|300"
+      },
+      "references": {}
+    },
+    {
+      "type": "create",
+      "resource": {
+        "id": "www-2031",
+        "kind": "CERTIFICATE",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "commonName": "www.starport.example",
+          "validTicks": "365"
+        },
+        "references": {}
+      }
+    },
+    {
+      "type": "update",
+      "id": "lb",
+      "patch": {},
+      "references": {
+        "certificate": "www-2031"
+      }
+    },
+    {
+      "type": "update",
+      "id": "web2",
+      "patch": {
+        "httpPaths": "/,/health"
+      },
+      "references": {}
+    },
+    {
+      "type": "inspect",
+      "id": "dev"
+    }
+  ],
+  "negative": [
+    {
+      "type": "update",
+      "id": "starport-zone",
+      "patch": {
+        "records": "www|A|203.0.113.50|300"
+      },
+      "references": {}
+    },
+    {
+      "type": "create",
+      "resource": {
+        "id": "www-2031",
+        "kind": "CERTIFICATE",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "commonName": "www.starport.example",
+          "validTicks": "365"
+        },
+        "references": {}
+      }
+    },
+    {
+      "type": "update",
+      "id": "lb",
+      "patch": {},
+      "references": {
+        "certificate": "www-2031"
+      }
+    }
+  ]
+}

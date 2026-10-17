@@ -1,0 +1,91 @@
+{
+  "levelId": "oci-002",
+  "golden": [
+    {
+      "type": "create",
+      "resource": {
+        "id": "dev",
+        "kind": "COMPARTMENT",
+        "compartment": "root",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "name": "dev",
+          "parent": "root"
+        },
+        "references": {}
+      }
+    },
+    {
+      "type": "create",
+      "resource": {
+        "id": "prod",
+        "kind": "COMPARTMENT",
+        "compartment": "root",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "name": "prod",
+          "parent": "root"
+        },
+        "references": {}
+      }
+    },
+    {
+      "type": "update",
+      "id": "test-server",
+      "patch": {
+        "compartment": "dev"
+      },
+      "references": {}
+    },
+    {
+      "type": "update",
+      "id": "prod-server",
+      "patch": {
+        "compartment": "prod"
+      },
+      "references": {}
+    },
+    {
+      "type": "inspect",
+      "id": "vcn"
+    }
+  ],
+  "negative": [
+    {
+      "type": "create",
+      "resource": {
+        "id": "dev",
+        "kind": "COMPARTMENT",
+        "compartment": "root",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "name": "dev",
+          "parent": "root"
+        },
+        "references": {}
+      }
+    },
+    {
+      "type": "create",
+      "resource": {
+        "id": "prod",
+        "kind": "COMPARTMENT",
+        "compartment": "root",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "name": "prod",
+          "parent": "root"
+        },
+        "references": {}
+      }
+    },
+    {
+      "type": "update",
+      "id": "prod-server",
+      "patch": {
+        "compartment": "dev"
+      },
+      "references": {}
+    }
+  ]
+}

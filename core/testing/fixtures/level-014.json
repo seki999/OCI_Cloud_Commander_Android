@@ -1,0 +1,75 @@
+{
+  "levelId": "oci-014",
+  "golden": [
+    {
+      "type": "update",
+      "id": "web",
+      "patch": {
+        "publicIp": "203.0.113.10"
+      },
+      "references": {}
+    },
+    {
+      "type": "update",
+      "id": "web-nsg",
+      "patch": {
+        "rules": "ingress|0.0.0.0/0|tcp|443|stateful;ingress|198.51.100.0/24|tcp|22|stateful"
+      },
+      "references": {}
+    },
+    {
+      "type": "update",
+      "id": "web",
+      "patch": {
+        "listenPorts": "443,22"
+      },
+      "references": {}
+    },
+    {
+      "type": "update",
+      "id": "web",
+      "patch": {
+        "sshKey": "ops-key"
+      },
+      "references": {}
+    },
+    {
+      "type": "inspect",
+      "id": "dev"
+    }
+  ],
+  "negative": [
+    {
+      "type": "update",
+      "id": "web",
+      "patch": {
+        "publicIp": "203.0.113.10"
+      },
+      "references": {}
+    },
+    {
+      "type": "update",
+      "id": "web-nsg",
+      "patch": {
+        "rules": "ingress|0.0.0.0/0|tcp|443|stateful;ingress|0.0.0.0/0|tcp|22|stateful"
+      },
+      "references": {}
+    },
+    {
+      "type": "update",
+      "id": "web",
+      "patch": {
+        "listenPorts": "443,22"
+      },
+      "references": {}
+    },
+    {
+      "type": "update",
+      "id": "web",
+      "patch": {
+        "sshKey": "ops-key"
+      },
+      "references": {}
+    }
+  ]
+}

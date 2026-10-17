@@ -1,0 +1,384 @@
+{
+  "schemaVersion": 1,
+  "id": "oci-024",
+  "chapter": 4,
+  "order": 24,
+  "titleKey": "levels.024.title",
+  "scenario": {
+    "region": "ap-tokyo-1",
+    "briefKey": "levels.024.brief",
+    "seed": 2401
+  },
+  "initialWorld": {
+    "schemaVersion": 1,
+    "levelId": "oci-024",
+    "seed": 2401,
+    "tick": 200,
+    "region": "ap-tokyo-1",
+    "resources": {
+      "dev": {
+        "id": "dev",
+        "kind": "COMPARTMENT",
+        "compartment": "root",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "name": "dev",
+          "parent": "root"
+        },
+        "references": {}
+      },
+      "prod": {
+        "id": "prod",
+        "kind": "COMPARTMENT",
+        "compartment": "root",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "name": "prod",
+          "parent": "root"
+        },
+        "references": {}
+      },
+      "vcn": {
+        "id": "vcn",
+        "kind": "VCN",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "cidr": "10.10.0.0/16"
+        },
+        "references": {}
+      },
+      "igw": {
+        "id": "igw",
+        "kind": "IGW",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "enabled": "true"
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      },
+      "public-rt": {
+        "id": "public-rt",
+        "kind": "ROUTE_TABLE",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "routes": "0.0.0.0/0>igw"
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      },
+      "web-sub": {
+        "id": "web-sub",
+        "kind": "SUBNET",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "cidr": "10.10.1.0/24",
+          "public": "true"
+        },
+        "references": {
+          "vcn": "vcn",
+          "routeTable": "public-rt"
+        }
+      },
+      "app-sub": {
+        "id": "app-sub",
+        "kind": "SUBNET",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "cidr": "10.10.2.0/24",
+          "public": "false"
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      },
+      "db-sub": {
+        "id": "db-sub",
+        "kind": "SUBNET",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "cidr": "10.10.3.0/24",
+          "public": "false"
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      },
+      "web-nsg": {
+        "id": "web-nsg",
+        "kind": "NSG",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "rules": ""
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      },
+      "app-nsg": {
+        "id": "app-nsg",
+        "kind": "NSG",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "rules": "ingress|10.10.1.0/24|tcp|8080|stateful;egress|10.10.3.0/24|tcp|1521|stateful"
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      },
+      "db-nsg": {
+        "id": "db-nsg",
+        "kind": "NSG",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "rules": "ingress|10.10.2.0/24|tcp|1521|stateful"
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      },
+      "app": {
+        "id": "app",
+        "kind": "COMPUTE",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "status": "RUNNING",
+          "privateIp": "10.10.2.10",
+          "publicIp": "",
+          "nsgs": "app-nsg",
+          "listenPorts": "8080",
+          "sshKey": "ops-key",
+          "shape": "VM.Standard.E4.Flex.2",
+          "image": "Oracle-Linux-9",
+          "dbEndpoint": "orders-db",
+          "dbSecret": "vault:orders-old"
+        },
+        "references": {
+          "subnet": "app-sub"
+        }
+      },
+      "orders-db": {
+        "id": "orders-db",
+        "kind": "DATABASE",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "status": "AVAILABLE",
+          "privateIp": "10.10.3.20",
+          "nsgs": "db-nsg",
+          "port": "1521",
+          "adminSecret": "vault:orders-2030",
+          "autoBackup": "false",
+          "retentionDays": "1",
+          "checksum": "sha256:d9000",
+          "records": "9000"
+        },
+        "references": {
+          "subnet": "db-sub"
+        }
+      },
+      "bk-10": {
+        "id": "bk-10",
+        "kind": "DB_BACKUP",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "type": "FULL",
+          "checksum": "sha256:c3000",
+          "records": "3000",
+          "createdTick": "10"
+        },
+        "references": {
+          "database": "orders-db"
+        }
+      },
+      "exports": {
+        "id": "exports",
+        "kind": "BUCKET",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "visibility": "public",
+          "lifecycle": ""
+        },
+        "references": {}
+      },
+      "export-csv": {
+        "id": "export-csv",
+        "kind": "OBJECT",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "name": "exports/customers.csv",
+          "sizeMb": "80",
+          "tier": "STANDARD",
+          "createdTick": "150"
+        },
+        "references": {
+          "bucket": "exports"
+        }
+      },
+      "workloads": {
+        "id": "workloads",
+        "kind": "DYNAMIC_GROUP",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "matchInstance": "app",
+          "matchCompartment": "dev"
+        },
+        "references": {}
+      },
+      "exports-read": {
+        "id": "exports-read",
+        "kind": "POLICY",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "verb": "read",
+          "resourceType": "BUCKET",
+          "scope": "dev",
+          "targetId": "exports"
+        },
+        "references": {
+          "group": "workloads"
+        }
+      }
+    },
+    "principals": [
+      {
+        "id": "commander"
+      },
+      {
+        "id": "newcomer"
+      },
+      {
+        "id": "workload",
+        "instanceId": "app"
+      }
+    ],
+    "budgetCredits": 500.0,
+    "requestRate": 0
+  },
+  "allowedActions": [
+    "select_region",
+    "study_card",
+    "create",
+    "update",
+    "delete",
+    "inspect",
+    "probe",
+    "advance_tick",
+    "hint",
+    "move",
+    "power",
+    "ssh",
+    "dig",
+    "http"
+  ],
+  "steps": [
+    {
+      "id": "s1",
+      "textKey": "levels.024.step1",
+      "hintKeys": [
+        "levels.024.hint1"
+      ]
+    },
+    {
+      "id": "s2",
+      "textKey": "levels.024.step2",
+      "hintKeys": [
+        "levels.024.hint2"
+      ]
+    },
+    {
+      "id": "s3",
+      "textKey": "levels.024.step3",
+      "hintKeys": [
+        "levels.024.hint3"
+      ]
+    }
+  ],
+  "objectives": [
+    {
+      "id": "exports-restricted",
+      "predicate": "storage.objectRestricted",
+      "params": {
+        "bucket": "exports",
+        "principal": "workload"
+      },
+      "messageKey": "goals.exports-restricted"
+    },
+    {
+      "id": "boss-db-connected",
+      "predicate": "db.connected",
+      "params": {
+        "app": "app"
+      },
+      "messageKey": "goals.boss-db-connected"
+    },
+    {
+      "id": "boss-backup",
+      "predicate": "db.backupFresh",
+      "params": {
+        "id": "orders-db",
+        "maxAge": "24",
+        "minRetention": "7"
+      },
+      "messageKey": "goals.boss-backup"
+    }
+  ],
+  "constraints": [
+    {
+      "id": "safe-24",
+      "predicate": "iam.leastPrivilege",
+      "params": {},
+      "messageKey": "goals.safe-24"
+    }
+  ],
+  "optionalObjectives": [
+    {
+      "id": "evidence-24",
+      "predicate": "logging.evidenceFound",
+      "params": {
+        "id": "dev"
+      },
+      "messageKey": "goals.evidence-24"
+    }
+  ],
+  "failureTriggers": [
+    {
+      "id": "broad-24",
+      "predicate": "iam.hasBroadPermissions",
+      "params": {},
+      "messageKey": "goals.broad-24"
+    }
+  ],
+  "tutorialKeys": [
+    "levels.024.tutorial"
+  ],
+  "optimalActionLimit": 5,
+  "reward": {
+    "xp": 500,
+    "maxStars": 3,
+    "badgeId": "data-guardian"
+  },
+  "dependsOn": [
+    "oci-023"
+  ],
+  "products": {
+    "orders-ondemand": "DB_BACKUP"
+  }
+}

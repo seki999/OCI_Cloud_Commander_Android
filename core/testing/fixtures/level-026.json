@@ -1,0 +1,51 @@
+{
+  "levelId": "oci-026",
+  "golden": [
+    {
+      "type": "update",
+      "id": "lb",
+      "patch": {
+        "healthPath": "/health"
+      },
+      "references": {}
+    },
+    {
+      "type": "update",
+      "id": "lb",
+      "patch": {
+        "backends": "web1:8080,web2:8080"
+      },
+      "references": {}
+    },
+    {
+      "type": "update",
+      "id": "web2",
+      "patch": {
+        "listenPorts": "8080"
+      },
+      "references": {}
+    },
+    {
+      "type": "inspect",
+      "id": "dev"
+    }
+  ],
+  "negative": [
+    {
+      "type": "update",
+      "id": "lb",
+      "patch": {
+        "healthPath": "/health"
+      },
+      "references": {}
+    },
+    {
+      "type": "update",
+      "id": "lb",
+      "patch": {
+        "backends": "web1:8080,web2:8080"
+      },
+      "references": {}
+    }
+  ]
+}

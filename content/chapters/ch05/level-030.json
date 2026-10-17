@@ -1,0 +1,377 @@
+{
+  "schemaVersion": 1,
+  "id": "oci-030",
+  "chapter": 5,
+  "order": 30,
+  "titleKey": "levels.030.title",
+  "scenario": {
+    "region": "ap-tokyo-1",
+    "briefKey": "levels.030.brief",
+    "seed": 3001
+  },
+  "initialWorld": {
+    "schemaVersion": 1,
+    "levelId": "oci-030",
+    "seed": 3001,
+    "tick": 120,
+    "region": "ap-tokyo-1",
+    "resources": {
+      "dev": {
+        "id": "dev",
+        "kind": "COMPARTMENT",
+        "compartment": "root",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "name": "dev",
+          "parent": "root"
+        },
+        "references": {}
+      },
+      "prod": {
+        "id": "prod",
+        "kind": "COMPARTMENT",
+        "compartment": "root",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "name": "prod",
+          "parent": "root"
+        },
+        "references": {}
+      },
+      "vcn": {
+        "id": "vcn",
+        "kind": "VCN",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "cidr": "10.10.0.0/16"
+        },
+        "references": {}
+      },
+      "igw": {
+        "id": "igw",
+        "kind": "IGW",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "enabled": "true"
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      },
+      "public-rt": {
+        "id": "public-rt",
+        "kind": "ROUTE_TABLE",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "routes": "0.0.0.0/0>igw"
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      },
+      "web-sub": {
+        "id": "web-sub",
+        "kind": "SUBNET",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "cidr": "10.10.1.0/24",
+          "public": "true"
+        },
+        "references": {
+          "vcn": "vcn",
+          "routeTable": "public-rt"
+        }
+      },
+      "app-sub": {
+        "id": "app-sub",
+        "kind": "SUBNET",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "cidr": "10.10.2.0/24",
+          "public": "false"
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      },
+      "db-sub": {
+        "id": "db-sub",
+        "kind": "SUBNET",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "cidr": "10.10.3.0/24",
+          "public": "false"
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      },
+      "web-nsg": {
+        "id": "web-nsg",
+        "kind": "NSG",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "rules": "ingress|10.10.1.0/24|tcp|8080|stateful"
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      },
+      "app-nsg": {
+        "id": "app-nsg",
+        "kind": "NSG",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "rules": ""
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      },
+      "db-nsg": {
+        "id": "db-nsg",
+        "kind": "NSG",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "rules": ""
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      },
+      "lb-nsg": {
+        "id": "lb-nsg",
+        "kind": "NSG",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "rules": "ingress|0.0.0.0/0|tcp|80|stateful;egress|10.10.1.0/24|tcp|8080|stateful;ingress|0.0.0.0/0|tcp|443|stateful"
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      },
+      "web1": {
+        "id": "web1",
+        "kind": "COMPUTE",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "status": "RUNNING",
+          "privateIp": "10.10.1.10",
+          "publicIp": "",
+          "nsgs": "web-nsg",
+          "listenPorts": "8080",
+          "sshKey": "ops-key",
+          "shape": "VM.Standard.E4.Flex.2",
+          "image": "Oracle-Linux-9",
+          "httpPaths": "/,/health"
+        },
+        "references": {
+          "subnet": "web-sub"
+        }
+      },
+      "web2": {
+        "id": "web2",
+        "kind": "COMPUTE",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "status": "RUNNING",
+          "privateIp": "10.10.1.11",
+          "publicIp": "",
+          "nsgs": "web-nsg",
+          "listenPorts": "8080",
+          "sshKey": "ops-key",
+          "shape": "VM.Standard.E4.Flex.2",
+          "image": "Oracle-Linux-9",
+          "httpPaths": "/"
+        },
+        "references": {
+          "subnet": "web-sub"
+        }
+      },
+      "old-cert": {
+        "id": "old-cert",
+        "kind": "CERTIFICATE",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "commonName": "www.starport.example",
+          "validTicks": "90",
+          "issuedTick": "10",
+          "notAfterTick": "100"
+        },
+        "references": {}
+      },
+      "lb": {
+        "id": "lb",
+        "kind": "LOAD_BALANCER",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "privateIp": "10.10.1.50",
+          "publicIp": "203.0.113.50",
+          "nsgs": "lb-nsg",
+          "listenPorts": "80,443",
+          "backends": "web1:8080,web2:8080",
+          "healthPath": "/health",
+          "healthTimeoutMs": "3000",
+          "redirectHttp": "true"
+        },
+        "references": {
+          "subnet": "web-sub",
+          "certificate": "old-cert"
+        }
+      },
+      "starport-zone": {
+        "id": "starport-zone",
+        "kind": "DNS_ZONE",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "domain": "starport.example",
+          "records": "www|A|203.0.113.60|300"
+        },
+        "references": {}
+      }
+    },
+    "principals": [
+      {
+        "id": "commander"
+      },
+      {
+        "id": "newcomer"
+      }
+    ],
+    "budgetCredits": 500.0,
+    "requestRate": 900
+  },
+  "allowedActions": [
+    "select_region",
+    "study_card",
+    "create",
+    "update",
+    "delete",
+    "inspect",
+    "probe",
+    "advance_tick",
+    "hint",
+    "move",
+    "power",
+    "ssh",
+    "dig",
+    "http"
+  ],
+  "steps": [
+    {
+      "id": "s1",
+      "textKey": "levels.030.step1",
+      "hintKeys": [
+        "levels.030.hint1"
+      ]
+    },
+    {
+      "id": "s2",
+      "textKey": "levels.030.step2",
+      "hintKeys": [
+        "levels.030.hint2"
+      ]
+    },
+    {
+      "id": "s3",
+      "textKey": "levels.030.step3",
+      "hintKeys": [
+        "levels.030.hint3"
+      ]
+    }
+  ],
+  "objectives": [
+    {
+      "id": "boss-dns",
+      "predicate": "dns.resolves",
+      "params": {
+        "name": "www.starport.example",
+        "target": "lb"
+      },
+      "messageKey": "goals.boss-dns"
+    },
+    {
+      "id": "boss-tls",
+      "predicate": "tls.validHostname",
+      "params": {
+        "id": "lb",
+        "host": "www.starport.example"
+      },
+      "messageKey": "goals.boss-tls"
+    },
+    {
+      "id": "boss-backends",
+      "predicate": "lb.backendsHealthy",
+      "params": {
+        "id": "lb",
+        "min": "2"
+      },
+      "messageKey": "goals.boss-backends"
+    },
+    {
+      "id": "boss-e2e",
+      "predicate": "portal.endToEnd",
+      "params": {
+        "url": "https://www.starport.example/",
+        "minBackends": "2"
+      },
+      "messageKey": "goals.boss-e2e"
+    }
+  ],
+  "constraints": [
+    {
+      "id": "safe-30",
+      "predicate": "iam.leastPrivilege",
+      "params": {},
+      "messageKey": "goals.safe-30"
+    }
+  ],
+  "optionalObjectives": [
+    {
+      "id": "evidence-30",
+      "predicate": "logging.evidenceFound",
+      "params": {
+        "id": "dev"
+      },
+      "messageKey": "goals.evidence-30"
+    }
+  ],
+  "failureTriggers": [
+    {
+      "id": "broad-30",
+      "predicate": "iam.hasBroadPermissions",
+      "params": {},
+      "messageKey": "goals.broad-30"
+    }
+  ],
+  "tutorialKeys": [
+    "levels.030.tutorial"
+  ],
+  "optimalActionLimit": 5,
+  "reward": {
+    "xp": 500,
+    "maxStars": 3,
+    "badgeId": "portal-keeper"
+  },
+  "dependsOn": [
+    "oci-029"
+  ],
+  "products": {
+    "www-2031": "CERTIFICATE"
+  }
+}

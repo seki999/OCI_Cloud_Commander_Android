@@ -1,0 +1,95 @@
+{
+  "levelId": "oci-015",
+  "golden": [
+    {
+      "type": "create",
+      "resource": {
+        "id": "bastion",
+        "kind": "BASTION",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "privateIp": "10.10.2.5",
+          "allowedCidr": "198.51.100.0/24"
+        },
+        "references": {
+          "subnet": "app-sub"
+        }
+      }
+    },
+    {
+      "type": "create",
+      "resource": {
+        "id": "bastion-ssh",
+        "kind": "BASTION_SESSION",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "port": "22",
+          "sshKey": "ops-key",
+          "ttlTicks": "60"
+        },
+        "references": {
+          "bastion": "bastion",
+          "target": "app"
+        }
+      }
+    },
+    {
+      "type": "update",
+      "id": "app-nsg",
+      "patch": {
+        "rules": "ingress|10.10.1.0/24|tcp|8080|stateful;ingress|10.10.2.5/32|tcp|22|stateful"
+      },
+      "references": {}
+    },
+    {
+      "type": "inspect",
+      "id": "dev"
+    }
+  ],
+  "negative": [
+    {
+      "type": "create",
+      "resource": {
+        "id": "bastion",
+        "kind": "BASTION",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "privateIp": "10.10.2.5",
+          "allowedCidr": "0.0.0.0/0"
+        },
+        "references": {
+          "subnet": "app-sub"
+        }
+      }
+    },
+    {
+      "type": "create",
+      "resource": {
+        "id": "bastion-ssh",
+        "kind": "BASTION_SESSION",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "port": "22",
+          "sshKey": "ops-key",
+          "ttlTicks": "60"
+        },
+        "references": {
+          "bastion": "bastion",
+          "target": "app"
+        }
+      }
+    },
+    {
+      "type": "update",
+      "id": "app-nsg",
+      "patch": {
+        "rules": "ingress|10.10.1.0/24|tcp|8080|stateful;ingress|10.10.2.5/32|tcp|22|stateful"
+      },
+      "references": {}
+    }
+  ]
+}

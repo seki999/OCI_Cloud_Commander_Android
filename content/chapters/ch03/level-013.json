@@ -1,0 +1,266 @@
+{
+  "schemaVersion": 1,
+  "id": "oci-013",
+  "chapter": 3,
+  "order": 13,
+  "titleKey": "levels.013.title",
+  "scenario": {
+    "region": "ap-tokyo-1",
+    "briefKey": "levels.013.brief",
+    "seed": 1301
+  },
+  "initialWorld": {
+    "schemaVersion": 1,
+    "levelId": "oci-013",
+    "seed": 1301,
+    "tick": 0,
+    "region": "ap-tokyo-1",
+    "resources": {
+      "dev": {
+        "id": "dev",
+        "kind": "COMPARTMENT",
+        "compartment": "root",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "name": "dev",
+          "parent": "root"
+        },
+        "references": {}
+      },
+      "prod": {
+        "id": "prod",
+        "kind": "COMPARTMENT",
+        "compartment": "root",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "name": "prod",
+          "parent": "root"
+        },
+        "references": {}
+      },
+      "vcn": {
+        "id": "vcn",
+        "kind": "VCN",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "cidr": "10.10.0.0/16"
+        },
+        "references": {}
+      },
+      "igw": {
+        "id": "igw",
+        "kind": "IGW",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "enabled": "true"
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      },
+      "public-rt": {
+        "id": "public-rt",
+        "kind": "ROUTE_TABLE",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "routes": "0.0.0.0/0>igw"
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      },
+      "web-sub": {
+        "id": "web-sub",
+        "kind": "SUBNET",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "cidr": "10.10.1.0/24",
+          "public": "true"
+        },
+        "references": {
+          "vcn": "vcn",
+          "routeTable": "public-rt"
+        }
+      },
+      "app-sub": {
+        "id": "app-sub",
+        "kind": "SUBNET",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "cidr": "10.10.2.0/24",
+          "public": "false"
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      },
+      "db-sub": {
+        "id": "db-sub",
+        "kind": "SUBNET",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "cidr": "10.10.3.0/24",
+          "public": "false"
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      },
+      "web-nsg": {
+        "id": "web-nsg",
+        "kind": "NSG",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "rules": "ingress|198.51.100.0/24|tcp|22|stateful;ingress|0.0.0.0/0|tcp|443|stateful"
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      },
+      "app-nsg": {
+        "id": "app-nsg",
+        "kind": "NSG",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "rules": ""
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      },
+      "db-nsg": {
+        "id": "db-nsg",
+        "kind": "NSG",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "rules": ""
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      }
+    },
+    "principals": [
+      {
+        "id": "commander"
+      },
+      {
+        "id": "newcomer"
+      }
+    ],
+    "budgetCredits": 500.0,
+    "requestRate": 0
+  },
+  "allowedActions": [
+    "select_region",
+    "study_card",
+    "create",
+    "update",
+    "delete",
+    "inspect",
+    "probe",
+    "advance_tick",
+    "hint",
+    "move",
+    "power",
+    "ssh",
+    "dig",
+    "http"
+  ],
+  "steps": [
+    {
+      "id": "s1",
+      "textKey": "levels.013.step1",
+      "hintKeys": [
+        "levels.013.hint1"
+      ]
+    },
+    {
+      "id": "s2",
+      "textKey": "levels.013.step2",
+      "hintKeys": [
+        "levels.013.hint2"
+      ]
+    }
+  ],
+  "objectives": [
+    {
+      "id": "web-running",
+      "predicate": "compute.running",
+      "params": {
+        "id": "web"
+      },
+      "messageKey": "goals.web-running"
+    },
+    {
+      "id": "ssh-operator-web-direct-ok",
+      "predicate": "ssh.allowed",
+      "params": {
+        "client": "operator",
+        "target": "web",
+        "via": "direct"
+      },
+      "messageKey": "goals.ssh-operator-web-direct-ok"
+    }
+  ],
+  "constraints": [
+    {
+      "id": "ssh-intruder-web-direct-deny",
+      "predicate": "ssh.denied",
+      "params": {
+        "client": "intruder",
+        "target": "web",
+        "via": "direct"
+      },
+      "messageKey": "goals.ssh-intruder-web-direct-deny"
+    },
+    {
+      "id": "safe-13",
+      "predicate": "iam.leastPrivilege",
+      "params": {},
+      "messageKey": "goals.safe-13"
+    }
+  ],
+  "optionalObjectives": [
+    {
+      "id": "evidence-13",
+      "predicate": "logging.evidenceFound",
+      "params": {
+        "id": "dev"
+      },
+      "messageKey": "goals.evidence-13"
+    }
+  ],
+  "failureTriggers": [
+    {
+      "id": "broad-13",
+      "predicate": "iam.hasBroadPermissions",
+      "params": {},
+      "messageKey": "goals.broad-13"
+    }
+  ],
+  "tutorialKeys": [
+    "levels.013.tutorial"
+  ],
+  "optimalActionLimit": 3,
+  "reward": {
+    "xp": 300,
+    "maxStars": 3,
+    "badgeId": ""
+  },
+  "dependsOn": [
+    "oci-012"
+  ],
+  "products": {
+    "web": "COMPUTE"
+  }
+}

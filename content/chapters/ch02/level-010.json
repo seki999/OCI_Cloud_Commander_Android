@@ -1,0 +1,283 @@
+{
+  "schemaVersion": 1,
+  "id": "oci-010",
+  "chapter": 2,
+  "order": 10,
+  "titleKey": "levels.010.title",
+  "scenario": {
+    "region": "ap-tokyo-1",
+    "briefKey": "levels.010.brief",
+    "seed": 1001
+  },
+  "initialWorld": {
+    "schemaVersion": 1,
+    "levelId": "oci-010",
+    "seed": 1001,
+    "region": "ap-tokyo-1",
+    "resources": {
+      "dev": {
+        "id": "dev",
+        "kind": "COMPARTMENT",
+        "compartment": "root",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "name": "dev",
+          "parent": "root"
+        },
+        "references": {}
+      },
+      "prod": {
+        "id": "prod",
+        "kind": "COMPARTMENT",
+        "compartment": "root",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "name": "prod",
+          "parent": "root"
+        },
+        "references": {}
+      },
+      "vcn": {
+        "id": "vcn",
+        "kind": "VCN",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "cidr": "10.10.0.0/16"
+        },
+        "references": {}
+      },
+      "web-sub": {
+        "id": "web-sub",
+        "kind": "SUBNET",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "cidr": "10.10.1.0/24",
+          "public": "true"
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      },
+      "app-sub": {
+        "id": "app-sub",
+        "kind": "SUBNET",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "cidr": "10.10.2.0/24",
+          "public": "false"
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      },
+      "db-sub": {
+        "id": "db-sub",
+        "kind": "SUBNET",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "cidr": "10.10.3.0/24",
+          "public": "false"
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      },
+      "web-nsg": {
+        "id": "web-nsg",
+        "kind": "NSG",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "rules": ""
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      },
+      "web": {
+        "id": "web",
+        "kind": "COMPUTE",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "status": "RUNNING",
+          "privateIp": "10.10.1.10",
+          "publicIp": "203.0.113.10",
+          "nsgs": "web-nsg",
+          "listenPorts": "443"
+        },
+        "references": {
+          "subnet": "web-sub"
+        }
+      },
+      "app-nsg": {
+        "id": "app-nsg",
+        "kind": "NSG",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "rules": ""
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      },
+      "app": {
+        "id": "app",
+        "kind": "COMPUTE",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "status": "RUNNING",
+          "privateIp": "10.10.2.10",
+          "publicIp": "",
+          "nsgs": "app-nsg",
+          "listenPorts": "8080"
+        },
+        "references": {
+          "subnet": "app-sub"
+        }
+      },
+      "db-nsg": {
+        "id": "db-nsg",
+        "kind": "NSG",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "rules": ""
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      },
+      "db": {
+        "id": "db",
+        "kind": "COMPUTE",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "status": "RUNNING",
+          "privateIp": "10.10.3.10",
+          "publicIp": "",
+          "nsgs": "db-nsg",
+          "listenPorts": "1521"
+        },
+        "references": {
+          "subnet": "db-sub"
+        }
+      }
+    },
+    "principals": [
+      {
+        "id": "commander"
+      },
+      {
+        "id": "newcomer"
+      }
+    ]
+  },
+  "allowedActions": [
+    "select_region",
+    "study_card",
+    "create",
+    "update",
+    "delete",
+    "inspect",
+    "probe",
+    "advance_tick",
+    "hint",
+    "move"
+  ],
+  "steps": [
+    {
+      "id": "s1",
+      "textKey": "levels.010.step1",
+      "hintKeys": [
+        "levels.010.hint1"
+      ]
+    },
+    {
+      "id": "s2",
+      "textKey": "levels.010.step2",
+      "hintKeys": [
+        "levels.010.hint2"
+      ]
+    }
+  ],
+  "objectives": [
+    {
+      "id": "app-internet-443-False",
+      "predicate": "network.reachable",
+      "params": {
+        "source": "app",
+        "destination": "internet",
+        "port": "443"
+      },
+      "messageKey": "goals.app-internet-443-False"
+    },
+    {
+      "id": "internet-app-8080-True",
+      "predicate": "network.unreachable",
+      "params": {
+        "source": "internet",
+        "destination": "app",
+        "port": "8080"
+      },
+      "messageKey": "goals.internet-app-8080-True"
+    },
+    {
+      "id": "private-app",
+      "predicate": "security.privateInstances",
+      "params": {
+        "ids": "app"
+      },
+      "messageKey": "goals.private-app"
+    }
+  ],
+  "constraints": [
+    {
+      "id": "safe-10",
+      "predicate": "iam.leastPrivilege",
+      "params": {},
+      "messageKey": "goals.safe-10"
+    }
+  ],
+  "optionalObjectives": [
+    {
+      "id": "evidence-10",
+      "predicate": "logging.evidenceFound",
+      "params": {
+        "id": "dev"
+      },
+      "messageKey": "goals.evidence-10"
+    }
+  ],
+  "failureTriggers": [
+    {
+      "id": "broad-10",
+      "predicate": "iam.hasBroadPermissions",
+      "params": {},
+      "messageKey": "goals.broad-10"
+    }
+  ],
+  "tutorialKeys": [
+    "levels.010.tutorial"
+  ],
+  "optimalActionLimit": 5,
+  "reward": {
+    "xp": 325,
+    "maxStars": 3,
+    "badgeId": ""
+  },
+  "dependsOn": [
+    "oci-009"
+  ],
+  "products": {
+    "nat": "NAT",
+    "private-rt": "ROUTE_TABLE"
+  }
+}

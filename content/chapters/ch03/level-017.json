@@ -1,0 +1,317 @@
+{
+  "schemaVersion": 1,
+  "id": "oci-017",
+  "chapter": 3,
+  "order": 17,
+  "titleKey": "levels.017.title",
+  "scenario": {
+    "region": "ap-tokyo-1",
+    "briefKey": "levels.017.brief",
+    "seed": 1701
+  },
+  "initialWorld": {
+    "schemaVersion": 1,
+    "levelId": "oci-017",
+    "seed": 1701,
+    "tick": 0,
+    "region": "ap-tokyo-1",
+    "resources": {
+      "dev": {
+        "id": "dev",
+        "kind": "COMPARTMENT",
+        "compartment": "root",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "name": "dev",
+          "parent": "root"
+        },
+        "references": {}
+      },
+      "prod": {
+        "id": "prod",
+        "kind": "COMPARTMENT",
+        "compartment": "root",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "name": "prod",
+          "parent": "root"
+        },
+        "references": {}
+      },
+      "vcn": {
+        "id": "vcn",
+        "kind": "VCN",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "cidr": "10.10.0.0/16"
+        },
+        "references": {}
+      },
+      "igw": {
+        "id": "igw",
+        "kind": "IGW",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "enabled": "true"
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      },
+      "public-rt": {
+        "id": "public-rt",
+        "kind": "ROUTE_TABLE",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "routes": "0.0.0.0/0>igw"
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      },
+      "web-sub": {
+        "id": "web-sub",
+        "kind": "SUBNET",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "cidr": "10.10.1.0/24",
+          "public": "true"
+        },
+        "references": {
+          "vcn": "vcn",
+          "routeTable": "public-rt"
+        }
+      },
+      "app-sub": {
+        "id": "app-sub",
+        "kind": "SUBNET",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "cidr": "10.10.2.0/24",
+          "public": "false"
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      },
+      "db-sub": {
+        "id": "db-sub",
+        "kind": "SUBNET",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "cidr": "10.10.3.0/24",
+          "public": "false"
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      },
+      "web-nsg": {
+        "id": "web-nsg",
+        "kind": "NSG",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "rules": ""
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      },
+      "app-nsg": {
+        "id": "app-nsg",
+        "kind": "NSG",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "rules": "ingress|10.10.1.0/24|tcp|8080|stateful"
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      },
+      "db-nsg": {
+        "id": "db-nsg",
+        "kind": "NSG",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "rules": ""
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      },
+      "app": {
+        "id": "app",
+        "kind": "COMPUTE",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "status": "RUNNING",
+          "privateIp": "10.10.2.10",
+          "publicIp": "",
+          "nsgs": "app-nsg",
+          "listenPorts": "8080",
+          "sshKey": "ops-key",
+          "shape": "VM.Standard.E4.Flex.2",
+          "image": "Oracle-Linux-9"
+        },
+        "references": {
+          "subnet": "app-sub"
+        }
+      },
+      "test-vm": {
+        "id": "test-vm",
+        "kind": "COMPUTE",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "status": "RUNNING",
+          "privateIp": "10.10.2.20",
+          "publicIp": "",
+          "nsgs": "app-nsg",
+          "listenPorts": "8080",
+          "sshKey": "ops-key",
+          "shape": "VM.Standard.E4.Flex.1",
+          "image": "Oracle-Linux-9"
+        },
+        "references": {
+          "subnet": "app-sub"
+        }
+      },
+      "orders-vol": {
+        "id": "orders-vol",
+        "kind": "VOLUME",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "sizeGb": "200",
+          "mountPoint": "/data",
+          "backupPolicy": "none",
+          "checksum": "sha256:7f3a91",
+          "dataVersion": "v42"
+        },
+        "references": {
+          "attachedTo": "app"
+        }
+      }
+    },
+    "principals": [
+      {
+        "id": "commander"
+      },
+      {
+        "id": "newcomer"
+      }
+    ],
+    "budgetCredits": 500.0,
+    "requestRate": 0
+  },
+  "allowedActions": [
+    "select_region",
+    "study_card",
+    "create",
+    "update",
+    "delete",
+    "inspect",
+    "probe",
+    "advance_tick",
+    "hint",
+    "move",
+    "power",
+    "ssh",
+    "dig",
+    "http"
+  ],
+  "steps": [
+    {
+      "id": "s1",
+      "textKey": "levels.017.step1",
+      "hintKeys": [
+        "levels.017.hint1"
+      ]
+    },
+    {
+      "id": "s2",
+      "textKey": "levels.017.step2",
+      "hintKeys": [
+        "levels.017.hint2"
+      ]
+    },
+    {
+      "id": "s3",
+      "textKey": "levels.017.step3",
+      "hintKeys": [
+        "levels.017.hint3"
+      ]
+    }
+  ],
+  "objectives": [
+    {
+      "id": "orders-protected",
+      "predicate": "storage.protected",
+      "params": {
+        "id": "orders-vol"
+      },
+      "messageKey": "goals.orders-protected"
+    },
+    {
+      "id": "restore-verified",
+      "predicate": "storage.backupRestorable",
+      "params": {
+        "source": "orders-vol",
+        "restored": "restore-test"
+      },
+      "messageKey": "goals.restore-verified"
+    }
+  ],
+  "constraints": [
+    {
+      "id": "safe-17",
+      "predicate": "iam.leastPrivilege",
+      "params": {},
+      "messageKey": "goals.safe-17"
+    }
+  ],
+  "optionalObjectives": [
+    {
+      "id": "evidence-17",
+      "predicate": "logging.evidenceFound",
+      "params": {
+        "id": "dev"
+      },
+      "messageKey": "goals.evidence-17"
+    }
+  ],
+  "failureTriggers": [
+    {
+      "id": "broad-17",
+      "predicate": "iam.hasBroadPermissions",
+      "params": {},
+      "messageKey": "goals.broad-17"
+    }
+  ],
+  "tutorialKeys": [
+    "levels.017.tutorial"
+  ],
+  "optimalActionLimit": 4,
+  "reward": {
+    "xp": 348,
+    "maxStars": 3,
+    "badgeId": ""
+  },
+  "dependsOn": [
+    "oci-016"
+  ],
+  "products": {
+    "orders-bk": "VOLUME_BACKUP",
+    "restore-test": "VOLUME"
+  }
+}

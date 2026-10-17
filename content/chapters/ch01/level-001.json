@@ -1,0 +1,134 @@
+{
+  "schemaVersion": 1,
+  "id": "oci-001",
+  "chapter": 1,
+  "order": 1,
+  "titleKey": "levels.001.title",
+  "scenario": {
+    "region": "ap-tokyo-1",
+    "briefKey": "levels.001.brief",
+    "seed": 101
+  },
+  "initialWorld": {
+    "schemaVersion": 1,
+    "levelId": "oci-001",
+    "seed": 101,
+    "region": "",
+    "resources": {},
+    "principals": [
+      {
+        "id": "commander"
+      },
+      {
+        "id": "newcomer"
+      }
+    ]
+  },
+  "allowedActions": [
+    "select_region",
+    "study_card",
+    "create",
+    "update",
+    "delete",
+    "inspect",
+    "probe",
+    "advance_tick",
+    "hint",
+    "move"
+  ],
+  "steps": [
+    {
+      "id": "s1",
+      "textKey": "levels.001.step1",
+      "hintKeys": [
+        "levels.001.hint1"
+      ]
+    },
+    {
+      "id": "s2",
+      "textKey": "levels.001.step2",
+      "hintKeys": [
+        "levels.001.hint2"
+      ]
+    }
+  ],
+  "objectives": [
+    {
+      "id": "tokyo",
+      "predicate": "world.region",
+      "params": {
+        "value": "ap-tokyo-1"
+      },
+      "messageKey": "goals.tokyo"
+    },
+    {
+      "id": "card-Tenancy",
+      "predicate": "concept.studied",
+      "params": {
+        "card": "Tenancy"
+      },
+      "messageKey": "goals.card-Tenancy"
+    },
+    {
+      "id": "card-Region",
+      "predicate": "concept.studied",
+      "params": {
+        "card": "Region"
+      },
+      "messageKey": "goals.card-Region"
+    },
+    {
+      "id": "card-AD",
+      "predicate": "concept.studied",
+      "params": {
+        "card": "AD"
+      },
+      "messageKey": "goals.card-AD"
+    },
+    {
+      "id": "card-FD",
+      "predicate": "concept.studied",
+      "params": {
+        "card": "FD"
+      },
+      "messageKey": "goals.card-FD"
+    }
+  ],
+  "constraints": [
+    {
+      "id": "safe-1",
+      "predicate": "iam.leastPrivilege",
+      "params": {},
+      "messageKey": "goals.safe-1"
+    }
+  ],
+  "optionalObjectives": [
+    {
+      "id": "evidence-1",
+      "predicate": "logging.evidenceFound",
+      "params": {
+        "id": "root"
+      },
+      "messageKey": "goals.evidence-1"
+    }
+  ],
+  "failureTriggers": [
+    {
+      "id": "broad-1",
+      "predicate": "iam.hasBroadPermissions",
+      "params": {},
+      "messageKey": "goals.broad-1"
+    }
+  ],
+  "tutorialKeys": [
+    "levels.001.tutorial"
+  ],
+  "optimalActionLimit": 6,
+  "reward": {
+    "xp": 100,
+    "maxStars": 3,
+    "badgeId": ""
+  },
+  "dependsOn": [],
+  "products": {}
+}

@@ -1,0 +1,97 @@
+{
+  "levelId": "oci-011",
+  "golden": [
+    {
+      "type": "create",
+      "resource": {
+        "id": "sgw",
+        "kind": "SERVICE_GATEWAY",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "enabled": "true",
+          "service": "oci-services"
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      }
+    },
+    {
+      "type": "create",
+      "resource": {
+        "id": "service-rt",
+        "kind": "ROUTE_TABLE",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "routes": "oci-services>sgw"
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      }
+    },
+    {
+      "type": "update",
+      "id": "app-sub",
+      "patch": {},
+      "references": {
+        "routeTable": "service-rt"
+      }
+    },
+    {
+      "type": "update",
+      "id": "app-nsg",
+      "patch": {
+        "rules": "egress|192.0.2.0/24|tcp|443|stateful"
+      },
+      "references": {}
+    },
+    {
+      "type": "inspect",
+      "id": "dev"
+    }
+  ],
+  "negative": [
+    {
+      "type": "create",
+      "resource": {
+        "id": "sgw",
+        "kind": "SERVICE_GATEWAY",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "enabled": "true",
+          "service": "oci-services"
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      }
+    },
+    {
+      "type": "create",
+      "resource": {
+        "id": "service-rt",
+        "kind": "ROUTE_TABLE",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "routes": "oci-services>sgw"
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      }
+    },
+    {
+      "type": "update",
+      "id": "app-sub",
+      "patch": {},
+      "references": {
+        "routeTable": "service-rt"
+      }
+    }
+  ]
+}

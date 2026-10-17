@@ -1,0 +1,350 @@
+{
+  "schemaVersion": 1,
+  "id": "oci-005",
+  "chapter": 1,
+  "order": 5,
+  "titleKey": "levels.005.title",
+  "scenario": {
+    "region": "ap-tokyo-1",
+    "briefKey": "levels.005.brief",
+    "seed": 501
+  },
+  "initialWorld": {
+    "schemaVersion": 1,
+    "levelId": "oci-005",
+    "seed": 501,
+    "region": "ap-tokyo-1",
+    "resources": {
+      "dev": {
+        "id": "dev",
+        "kind": "COMPARTMENT",
+        "compartment": "root",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "name": "dev",
+          "parent": "root"
+        },
+        "references": {}
+      },
+      "prod": {
+        "id": "prod",
+        "kind": "COMPARTMENT",
+        "compartment": "root",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "name": "prod",
+          "parent": "root"
+        },
+        "references": {}
+      },
+      "vcn": {
+        "id": "vcn",
+        "kind": "VCN",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "cidr": "10.10.0.0/16"
+        },
+        "references": {}
+      },
+      "web-sub": {
+        "id": "web-sub",
+        "kind": "SUBNET",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "cidr": "10.10.1.0/24",
+          "public": "true"
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      },
+      "app-sub": {
+        "id": "app-sub",
+        "kind": "SUBNET",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "cidr": "10.10.2.0/24",
+          "public": "false"
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      },
+      "db-sub": {
+        "id": "db-sub",
+        "kind": "SUBNET",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "cidr": "10.10.3.0/24",
+          "public": "false"
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      },
+      "web-nsg": {
+        "id": "web-nsg",
+        "kind": "NSG",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "rules": ""
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      },
+      "web": {
+        "id": "web",
+        "kind": "COMPUTE",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "status": "RUNNING",
+          "privateIp": "10.10.1.10",
+          "publicIp": "203.0.113.10",
+          "nsgs": "web-nsg",
+          "listenPorts": "443"
+        },
+        "references": {
+          "subnet": "web-sub"
+        }
+      },
+      "app-nsg": {
+        "id": "app-nsg",
+        "kind": "NSG",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "rules": ""
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      },
+      "app": {
+        "id": "app",
+        "kind": "COMPUTE",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "status": "RUNNING",
+          "privateIp": "10.10.2.10",
+          "publicIp": "",
+          "nsgs": "app-nsg",
+          "listenPorts": "8080"
+        },
+        "references": {
+          "subnet": "app-sub"
+        }
+      },
+      "db-nsg": {
+        "id": "db-nsg",
+        "kind": "NSG",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "rules": ""
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      },
+      "db": {
+        "id": "db",
+        "kind": "COMPUTE",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "status": "RUNNING",
+          "privateIp": "10.10.3.10",
+          "publicIp": "",
+          "nsgs": "db-nsg",
+          "listenPorts": "1521"
+        },
+        "references": {
+          "subnet": "db-sub"
+        }
+      },
+      "worker": {
+        "id": "worker",
+        "kind": "COMPUTE",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "status": "RUNNING",
+          "privateIp": "10.10.1.50",
+          "publicIp": "",
+          "nsgs": "",
+          "listenPorts": "8080"
+        },
+        "references": {
+          "subnet": "web-sub"
+        }
+      },
+      "other": {
+        "id": "other",
+        "kind": "COMPUTE",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "status": "RUNNING",
+          "privateIp": "10.10.1.60",
+          "publicIp": "",
+          "nsgs": "",
+          "listenPorts": "8080"
+        },
+        "references": {
+          "subnet": "web-sub"
+        }
+      },
+      "bucket": {
+        "id": "bucket",
+        "kind": "BUCKET",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "visibility": "private"
+        },
+        "references": {}
+      }
+    },
+    "principals": [
+      {
+        "id": "commander"
+      },
+      {
+        "id": "newcomer"
+      },
+      {
+        "id": "workload",
+        "instanceId": "worker"
+      },
+      {
+        "id": "other-workload",
+        "instanceId": "other"
+      }
+    ]
+  },
+  "allowedActions": [
+    "select_region",
+    "study_card",
+    "create",
+    "update",
+    "delete",
+    "inspect",
+    "probe",
+    "advance_tick",
+    "hint",
+    "move"
+  ],
+  "steps": [
+    {
+      "id": "s1",
+      "textKey": "levels.005.step1",
+      "hintKeys": [
+        "levels.005.hint1"
+      ]
+    },
+    {
+      "id": "s2",
+      "textKey": "levels.005.step2",
+      "hintKeys": [
+        "levels.005.hint2"
+      ]
+    }
+  ],
+  "objectives": [
+    {
+      "id": "workloads-exists",
+      "predicate": "resource.exists",
+      "params": {
+        "id": "workloads",
+        "kind": "DYNAMIC_GROUP"
+      },
+      "messageKey": "goals.workloads-exists"
+    },
+    {
+      "id": "worker-read",
+      "predicate": "iam.permits",
+      "params": {
+        "principal": "workload",
+        "verb": "read",
+        "kind": "BUCKET",
+        "compartment": "dev",
+        "id": "bucket"
+      },
+      "messageKey": "goals.worker-read"
+    },
+    {
+      "id": "other-denied",
+      "predicate": "iam.denies",
+      "params": {
+        "principal": "other-workload",
+        "verb": "read",
+        "kind": "BUCKET",
+        "compartment": "dev",
+        "id": "bucket"
+      },
+      "messageKey": "goals.other-denied"
+    },
+    {
+      "id": "worker-no-delete",
+      "predicate": "iam.denies",
+      "params": {
+        "principal": "workload",
+        "verb": "manage",
+        "kind": "BUCKET",
+        "compartment": "dev",
+        "id": "bucket"
+      },
+      "messageKey": "goals.worker-no-delete"
+    }
+  ],
+  "constraints": [
+    {
+      "id": "safe-5",
+      "predicate": "iam.leastPrivilege",
+      "params": {},
+      "messageKey": "goals.safe-5"
+    }
+  ],
+  "optionalObjectives": [
+    {
+      "id": "evidence-5",
+      "predicate": "logging.evidenceFound",
+      "params": {
+        "id": "dev"
+      },
+      "messageKey": "goals.evidence-5"
+    }
+  ],
+  "failureTriggers": [
+    {
+      "id": "broad-5",
+      "predicate": "iam.hasBroadPermissions",
+      "params": {},
+      "messageKey": "goals.broad-5"
+    }
+  ],
+  "tutorialKeys": [
+    "levels.005.tutorial"
+  ],
+  "optimalActionLimit": 3,
+  "reward": {
+    "xp": 200,
+    "maxStars": 3,
+    "badgeId": ""
+  },
+  "dependsOn": [
+    "oci-004"
+  ],
+  "products": {
+    "workloads": "DYNAMIC_GROUP",
+    "bucket-read": "POLICY"
+  }
+}

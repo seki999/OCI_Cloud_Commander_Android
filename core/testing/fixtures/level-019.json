@@ -1,0 +1,71 @@
+{
+  "levelId": "oci-019",
+  "golden": [
+    {
+      "type": "create",
+      "resource": {
+        "id": "assets",
+        "kind": "BUCKET",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "visibility": "private",
+          "lifecycle": ""
+        },
+        "references": {}
+      }
+    },
+    {
+      "type": "create",
+      "resource": {
+        "id": "logo",
+        "kind": "OBJECT",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "name": "static/logo.svg",
+          "sizeMb": "2"
+        },
+        "references": {
+          "bucket": "assets"
+        }
+      }
+    },
+    {
+      "type": "inspect",
+      "id": "dev"
+    }
+  ],
+  "negative": [
+    {
+      "type": "create",
+      "resource": {
+        "id": "assets",
+        "kind": "BUCKET",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "visibility": "public",
+          "lifecycle": ""
+        },
+        "references": {}
+      }
+    },
+    {
+      "type": "create",
+      "resource": {
+        "id": "logo",
+        "kind": "OBJECT",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "name": "static/logo.svg",
+          "sizeMb": "2"
+        },
+        "references": {
+          "bucket": "assets"
+        }
+      }
+    }
+  ]
+}

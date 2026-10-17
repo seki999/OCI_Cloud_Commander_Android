@@ -1,0 +1,29 @@
+{
+  "levelId": "oci-004",
+  "golden": [
+    {
+      "type": "update",
+      "id": "read-dev",
+      "patch": {
+        "verb": "read",
+        "resourceType": "COMPUTE",
+        "scope": "dev"
+      },
+      "references": {}
+    },
+    {
+      "type": "inspect",
+      "id": "dev"
+    }
+  ],
+  "negative": [
+    {
+      "type": "update",
+      "id": "read-dev",
+      "patch": {
+        "verb": "read"
+      },
+      "references": {}
+    }
+  ]
+}

@@ -1,0 +1,290 @@
+{
+  "schemaVersion": 1,
+  "id": "oci-008",
+  "chapter": 2,
+  "order": 8,
+  "titleKey": "levels.008.title",
+  "scenario": {
+    "region": "ap-tokyo-1",
+    "briefKey": "levels.008.brief",
+    "seed": 801
+  },
+  "initialWorld": {
+    "schemaVersion": 1,
+    "levelId": "oci-008",
+    "seed": 801,
+    "region": "ap-tokyo-1",
+    "resources": {
+      "dev": {
+        "id": "dev",
+        "kind": "COMPARTMENT",
+        "compartment": "root",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "name": "dev",
+          "parent": "root"
+        },
+        "references": {}
+      },
+      "prod": {
+        "id": "prod",
+        "kind": "COMPARTMENT",
+        "compartment": "root",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "name": "prod",
+          "parent": "root"
+        },
+        "references": {}
+      },
+      "vcn": {
+        "id": "vcn",
+        "kind": "VCN",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "cidr": "10.10.0.0/16"
+        },
+        "references": {}
+      },
+      "web-sub": {
+        "id": "web-sub",
+        "kind": "SUBNET",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "cidr": "10.10.1.0/24",
+          "public": "true"
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      },
+      "web-nsg": {
+        "id": "web-nsg",
+        "kind": "NSG",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "rules": ""
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      },
+      "web": {
+        "id": "web",
+        "kind": "COMPUTE",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "status": "RUNNING",
+          "privateIp": "10.10.1.10",
+          "publicIp": "203.0.113.10",
+          "nsgs": "web-nsg",
+          "listenPorts": "443"
+        },
+        "references": {
+          "subnet": "web-sub"
+        }
+      },
+      "app-nsg": {
+        "id": "app-nsg",
+        "kind": "NSG",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "rules": ""
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      },
+      "app": {
+        "id": "app",
+        "kind": "COMPUTE",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "status": "RUNNING",
+          "privateIp": "10.10.1.20",
+          "publicIp": "203.0.113.20",
+          "nsgs": "app-nsg",
+          "listenPorts": "8080"
+        },
+        "references": {
+          "subnet": "web-sub"
+        }
+      },
+      "db-nsg": {
+        "id": "db-nsg",
+        "kind": "NSG",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "rules": ""
+        },
+        "references": {
+          "vcn": "vcn"
+        }
+      },
+      "db": {
+        "id": "db",
+        "kind": "COMPUTE",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "status": "RUNNING",
+          "privateIp": "10.10.1.30",
+          "publicIp": "203.0.113.30",
+          "nsgs": "db-nsg",
+          "listenPorts": "1521"
+        },
+        "references": {
+          "subnet": "web-sub"
+        }
+      }
+    },
+    "principals": [
+      {
+        "id": "commander"
+      },
+      {
+        "id": "newcomer"
+      }
+    ]
+  },
+  "allowedActions": [
+    "select_region",
+    "study_card",
+    "create",
+    "update",
+    "delete",
+    "inspect",
+    "probe",
+    "advance_tick",
+    "hint",
+    "move"
+  ],
+  "steps": [
+    {
+      "id": "s1",
+      "textKey": "levels.008.step1",
+      "hintKeys": [
+        "levels.008.hint1"
+      ]
+    },
+    {
+      "id": "s2",
+      "textKey": "levels.008.step2",
+      "hintKeys": [
+        "levels.008.hint2"
+      ]
+    }
+  ],
+  "objectives": [
+    {
+      "id": "private-app-db",
+      "predicate": "security.privateInstances",
+      "params": {
+        "ids": "app,db"
+      },
+      "messageKey": "goals.private-app-db"
+    },
+    {
+      "id": "web-public",
+      "predicate": "network.publicAddressable",
+      "params": {
+        "id": "web",
+        "value": "true"
+      },
+      "messageKey": "goals.web-public"
+    },
+    {
+      "id": "separate-subnets",
+      "predicate": "network.nonOverlapping",
+      "params": {},
+      "messageKey": "goals.separate-subnets"
+    },
+    {
+      "id": "app-sub-exists",
+      "predicate": "resource.exists",
+      "params": {
+        "id": "app-sub",
+        "kind": "SUBNET"
+      },
+      "messageKey": "goals.app-sub-exists"
+    },
+    {
+      "id": "db-sub-exists",
+      "predicate": "resource.exists",
+      "params": {
+        "id": "db-sub",
+        "kind": "SUBNET"
+      },
+      "messageKey": "goals.db-sub-exists"
+    },
+    {
+      "id": "app-subnet",
+      "predicate": "resource.referenceEquals",
+      "params": {
+        "id": "app",
+        "key": "subnet",
+        "value": "app-sub"
+      },
+      "messageKey": "goals.app-subnet"
+    },
+    {
+      "id": "db-subnet",
+      "predicate": "resource.referenceEquals",
+      "params": {
+        "id": "db",
+        "key": "subnet",
+        "value": "db-sub"
+      },
+      "messageKey": "goals.db-subnet"
+    }
+  ],
+  "constraints": [
+    {
+      "id": "safe-8",
+      "predicate": "iam.leastPrivilege",
+      "params": {},
+      "messageKey": "goals.safe-8"
+    }
+  ],
+  "optionalObjectives": [
+    {
+      "id": "evidence-8",
+      "predicate": "logging.evidenceFound",
+      "params": {
+        "id": "dev"
+      },
+      "messageKey": "goals.evidence-8"
+    }
+  ],
+  "failureTriggers": [
+    {
+      "id": "broad-8",
+      "predicate": "iam.hasBroadPermissions",
+      "params": {},
+      "messageKey": "goals.broad-8"
+    }
+  ],
+  "tutorialKeys": [
+    "levels.008.tutorial"
+  ],
+  "optimalActionLimit": 5,
+  "reward": {
+    "xp": 275,
+    "maxStars": 3,
+    "badgeId": ""
+  },
+  "dependsOn": [
+    "oci-007"
+  ],
+  "products": {
+    "app-sub": "SUBNET",
+    "db-sub": "SUBNET"
+  }
+}

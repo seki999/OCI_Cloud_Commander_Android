@@ -1,0 +1,39 @@
+{
+  "levelId": "oci-027",
+  "golden": [
+    {
+      "type": "create",
+      "resource": {
+        "id": "starport-zone",
+        "kind": "DNS_ZONE",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "domain": "starport.example",
+          "records": "www|A|203.0.113.50|300;api|CNAME|www.starport.example|300"
+        },
+        "references": {}
+      }
+    },
+    {
+      "type": "inspect",
+      "id": "dev"
+    }
+  ],
+  "negative": [
+    {
+      "type": "create",
+      "resource": {
+        "id": "starport-zone",
+        "kind": "DNS_ZONE",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "domain": "starport.example",
+          "records": "www|A|10.10.1.50|300;api|CNAME|www.starport.example|300"
+        },
+        "references": {}
+      }
+    }
+  ]
+}

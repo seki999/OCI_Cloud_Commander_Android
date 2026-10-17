@@ -1,0 +1,69 @@
+{
+  "levelId": "oci-006",
+  "golden": [
+    {
+      "type": "select_region",
+      "value": "ap-tokyo-1"
+    },
+    {
+      "type": "update",
+      "id": "sample",
+      "patch": {
+        "compartment": "dev"
+      },
+      "references": {}
+    },
+    {
+      "type": "update",
+      "id": "operators",
+      "patch": {
+        "members": "newcomer"
+      },
+      "references": {}
+    },
+    {
+      "type": "update",
+      "id": "read-dev",
+      "patch": {
+        "verb": "read",
+        "resourceType": "COMPUTE",
+        "scope": "dev"
+      },
+      "references": {}
+    },
+    {
+      "type": "update",
+      "id": "workloads",
+      "patch": {
+        "matchInstance": "worker"
+      },
+      "references": {}
+    },
+    {
+      "type": "inspect",
+      "id": "dev"
+    }
+  ],
+  "negative": [
+    {
+      "type": "select_region",
+      "value": "ap-tokyo-1"
+    },
+    {
+      "type": "update",
+      "id": "sample",
+      "patch": {
+        "compartment": "dev"
+      },
+      "references": {}
+    },
+    {
+      "type": "update",
+      "id": "operators",
+      "patch": {
+        "members": "newcomer"
+      },
+      "references": {}
+    }
+  ]
+}

@@ -1,0 +1,69 @@
+{
+  "levelId": "oci-013",
+  "golden": [
+    {
+      "type": "create",
+      "resource": {
+        "id": "web",
+        "kind": "COMPUTE",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "privateIp": "10.10.1.10",
+          "publicIp": "203.0.113.10",
+          "nsgs": "web-nsg",
+          "listenPorts": "22,443",
+          "sshKey": "ops-key",
+          "shape": "VM.Standard.E4.Flex.1",
+          "image": "Oracle-Linux-9",
+          "logPath": "",
+          "httpPaths": "",
+          "dbEndpoint": "",
+          "dbSecret": ""
+        },
+        "references": {
+          "subnet": "web-sub"
+        }
+      }
+    },
+    {
+      "type": "advance_tick",
+      "ticks": 2
+    },
+    {
+      "type": "inspect",
+      "id": "dev"
+    }
+  ],
+  "negative": [
+    {
+      "type": "create",
+      "resource": {
+        "id": "web",
+        "kind": "COMPUTE",
+        "compartment": "dev",
+        "region": "ap-tokyo-1",
+        "properties": {
+          "privateIp": "10.10.1.10",
+          "publicIp": "203.0.113.10",
+          "nsgs": "web-nsg",
+          "listenPorts": "22,443",
+          "sshKey": "laptop-key",
+          "shape": "VM.Standard.E4.Flex.1",
+          "image": "Oracle-Linux-9",
+          "logPath": "",
+          "httpPaths": "",
+          "dbEndpoint": "",
+          "dbSecret": ""
+        },
+        "references": {
+          "subnet": "web-sub"
+        }
+      }
+    },
+    {
+      "type": "advance_tick",
+      "ticks": 2
+    }
+  ]
+}
