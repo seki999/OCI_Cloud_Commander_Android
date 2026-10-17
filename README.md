@@ -4,6 +4,9 @@ Kotlin + Jetpack Compose 原生 Android 离线教育游戏。玩法是城市资�
 
 当前交付为 **Phase 0–2 增量版（v0.2.1，L01–L30，第 1–5 章）**，不是完整 60 关成品。L31–L60 没有伪造关卡文件或占位通关页面。完整产品规格保存在 [docs/OCI_Cloud_Commander_Android_Development_Spec.md](docs/OCI_Cloud_Commander_Android_Development_Spec.md)。
 
+
+**通关攻略**：[第 1–30 关完整通关秘籍（Console 逐关操作、三星路径和故障排查）](docs/COMPLETE_WALKTHROUGH.md)。
+
 ## 当前实现
 
 - 横屏 Android 10+；Compose Material 3 / Navigation / ViewModel / StateFlow。
